@@ -1,31 +1,5 @@
 package org.graphwalker.core.algorithm;
 
-/*
- * #%L
- * GraphWalker Core
- * %%
- * Copyright (C) 2005 - 2014 GraphWalker
- * %%
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * #L%
- */
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -35,11 +9,7 @@ import org.graphwalker.core.model.Model;
 import org.graphwalker.core.model.Vertex;
 import org.junit.Test;
 
-/**
- * @author Nils Olsson
- */
-public class DepthFirstSearchTest {
-
+public class BreadthFirstSearchTest {
   private static final Vertex v00 = new Vertex().setName("v00");
   private static final Vertex v01 = new Vertex().setName("v01");
   private static final Vertex v10 = new Vertex().setName("v10");
@@ -57,6 +27,13 @@ public class DepthFirstSearchTest {
   private static final Vertex ve1 = new Vertex().setName("ve1");
   private static final Edge ee1 = new Edge().setName("e1").setSourceVertex(ve0).setTargetVertex(ve1);
 
+  private static final Vertex v1 = new Vertex().setName("v1");
+  private static final Vertex v2 = new Vertex().setName("v2");
+  private static final Edge v1e1 = new Edge().setName("v1e1").setSourceVertex(v1).setTargetVertex(v2);
+  private static final Edge v1e2 = new Edge().setName("v1e2").setSourceVertex(v1).setTargetVertex(v2);
+  private static final Edge v2e3 = new Edge().setName("v2e3").setSourceVertex(v2).setTargetVertex(v1);
+  private static final Edge v2e4 = new Edge().setName("v2e4").setSourceVertex(v2).setTargetVertex(v1);
+
   //robodog
   private static final Vertex s1 = new Vertex().setName("s1");
   private static final Vertex s2 = new Vertex().setName("s2");
@@ -67,26 +44,34 @@ public class DepthFirstSearchTest {
   private static final Edge t5 = new Edge().setName("t5").setSourceVertex(s2).setTargetVertex(s2);
   private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s2).setTargetVertex(s1);
 
+
+
   private static final Model model = new Model()
-      .addEdge(e1)
-      .addEdge(e2)
-      .addEdge(e3)
-      .addEdge(e4)
-      .addEdge(e5)
-      .addEdge(ee1)
-      .addEdge(t1)
-      .addEdge(t2)
-      .addEdge(t3)
-      .addEdge(t4)
-      .addEdge(t5)
-      .addEdge(t6);
+    .addEdge(e1)
+    .addEdge(e2)
+    .addEdge(e3)
+    .addEdge(e4)
+    .addEdge(e5)
+    .addEdge(ee1)
+    .addEdge(v1e1)
+    .addEdge(v1e2)
+    .addEdge(v2e3)
+    .addEdge(v2e4)
+    .addEdge(t1)
+    .addEdge(t2)
+    .addEdge(t3)
+    .addEdge(t4)
+    .addEdge(t5)
+    .addEdge(t6);
 
   @Test
   public void connectedComponent() throws Exception {
-    DepthFirstSearch depthFirstSearch = new DepthFirstSearch(new TestExecutionContext().setModel(model.build()));
-    assertThat(depthFirstSearch.getConnectedComponent(v00.build()).size(), is(10));
-    assertThat(depthFirstSearch.getConnectedComponent(ve0.build()).size(), is(3));
-    //System.out.println(depthFirstSearch.getConnectedComponent(v00.build()).toString());
-    System.out.println(depthFirstSearch.getConnectedComponent(s1.build()).toString());
+    BreadthFirstSearch breadthFirstSearch = new BreadthFirstSearch(new TestExecutionContext().setModel(model.build()));
+    /*assertThat(breadthFirstSearch.getConnectedComponent(v00.build()).size(), is(10));
+    assertThat(breadthFirstSearch.getConnectedComponent(ve0.build()).size(), is(3));*/
+   //System.out.println(breadthFirstSearch.getConnectedComponent(v00.build()).toString());
+   //System.out.println(breadthFirstSearch.getConnectedComponent(v1.build()).toString());
+    System.out.println(breadthFirstSearch.getConnectedComponent(s1.build()).toString());
   }
+
 }

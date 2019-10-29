@@ -244,6 +244,7 @@ public class Edge extends CachedBuilder<Edge, Edge.RuntimeEdge> {
     private final Guard guard;
     private final Double weight;
     private final Integer dependency;
+    private final Edge edge;
 
     private RuntimeEdge(Edge edge) {
       super(edge.getId(), edge.getName(), edge.getActions(), edge.getRequirements(), edge.getProperties());
@@ -252,6 +253,7 @@ public class Edge extends CachedBuilder<Edge, Edge.RuntimeEdge> {
       this.guard = edge.getGuard();
       this.weight = edge.getWeight();
       this.dependency = edge.getDependency();
+      this.edge = edge;
     }
 
     private <T> T build(Builder<T> builder) {
@@ -323,6 +325,8 @@ public class Edge extends CachedBuilder<Edge, Edge.RuntimeEdge> {
                + ((weight == null) ? 0 : weight.hashCode());
       result = prime * result
                + ((dependency == null) ? 0 : dependency.hashCode());
+      result = prime * result
+        + ((edge == null) ? 0 : edge.hashCode());
       return result;
     }
 
@@ -336,7 +340,8 @@ public class Edge extends CachedBuilder<Edge, Edge.RuntimeEdge> {
              Objects.equals(targetVertex, that.targetVertex) &&
              Objects.equals(guard, that.guard) &&
              Objects.equals(weight, that.weight) &&
-             Objects.equals(dependency, that.dependency);
+             Objects.equals(dependency, that.dependency) &&
+             Objects.equals(edge, that.edge);
     }
 
     /**
@@ -359,6 +364,11 @@ public class Edge extends CachedBuilder<Edge, Edge.RuntimeEdge> {
       return (double) getDependency() / 100;
     }
 
+    @Override
+    public String toString(){
+
+      return edge.getName();
+    }
 
   }
 }

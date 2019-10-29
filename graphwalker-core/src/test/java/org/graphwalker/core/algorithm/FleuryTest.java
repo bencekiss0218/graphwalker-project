@@ -78,6 +78,7 @@ public class FleuryTest {
     Context context = new TestExecutionContext(model, null);
     Fleury fleury = new Fleury(context);
     Path<Element> path = fleury.getTrail(v1.build());
+    System.out.println(path);
     assertArrayEquals(expectedPath.toArray(), path.toArray());
   }
 

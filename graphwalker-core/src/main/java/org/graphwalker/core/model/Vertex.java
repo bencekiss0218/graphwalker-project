@@ -99,10 +99,12 @@ public class Vertex extends CachedBuilder<Vertex, Vertex.RuntimeVertex> {
   public static class RuntimeVertex extends RuntimeBase {
 
     private final String sharedState;
+    private final Vertex vertex;
 
     private RuntimeVertex(Vertex vertex) {
       super(vertex.getId(), vertex.getName(), vertex.getRequirements(), vertex.getProperties());
       this.sharedState = vertex.getSharedState();
+      this.vertex = vertex;
     }
 
     /**
@@ -148,6 +150,11 @@ public class Vertex extends CachedBuilder<Vertex, Vertex.RuntimeVertex> {
       }
       RuntimeVertex that = (RuntimeVertex) o;
       return Objects.equals(sharedState, that.sharedState);
+    }
+
+    @Override
+    public String toString(){
+      return this.vertex.getName();
     }
   }
 }

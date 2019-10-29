@@ -1,31 +1,5 @@
 package org.graphwalker.core.algorithm;
 
-/*
- * #%L
- * GraphWalker Core
- * %%
- * Copyright (C) 2005 - 2014 GraphWalker
- * %%
- * Permission is hereby granted, free of charge, to any person obtaining a copy
- * of this software and associated documentation files (the "Software"), to deal
- * in the Software without restriction, including without limitation the rights
- * to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
- * copies of the Software, and to permit persons to whom the Software is
- * furnished to do so, subject to the following conditions:
- * 
- * The above copyright notice and this permission notice shall be included in
- * all copies or substantial portions of the Software.
- * 
- * THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
- * IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
- * FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
- * AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
- * LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
- * OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
- * THE SOFTWARE.
- * #L%
- */
-
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
@@ -35,11 +9,7 @@ import org.graphwalker.core.model.Model;
 import org.graphwalker.core.model.Vertex;
 import org.junit.Test;
 
-/**
- * @author Nils Olsson
- */
-public class DepthFirstSearchTest {
-
+public class AllTransitionStateTest {
   private static final Vertex v00 = new Vertex().setName("v00");
   private static final Vertex v01 = new Vertex().setName("v01");
   private static final Vertex v10 = new Vertex().setName("v10");
@@ -65,28 +35,27 @@ public class DepthFirstSearchTest {
   private static final Edge t3 = new Edge().setName("t3").setSourceVertex(s1).setTargetVertex(s2);
   private static final Edge t4 = new Edge().setName("t4").setSourceVertex(s2).setTargetVertex(s1);
   private static final Edge t5 = new Edge().setName("t5").setSourceVertex(s2).setTargetVertex(s2);
-  private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s2).setTargetVertex(s1);
+ // private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s2).setTargetVertex(s1);
 
   private static final Model model = new Model()
-      .addEdge(e1)
-      .addEdge(e2)
-      .addEdge(e3)
-      .addEdge(e4)
-      .addEdge(e5)
-      .addEdge(ee1)
-      .addEdge(t1)
-      .addEdge(t2)
-      .addEdge(t3)
-      .addEdge(t4)
-      .addEdge(t5)
-      .addEdge(t6);
+    .addEdge(e1)
+    .addEdge(e2)
+    .addEdge(e3)
+    .addEdge(e4)
+    .addEdge(e5)
+    .addEdge(t1)
+    .addEdge(t2)
+    .addEdge(t3)
+    .addEdge(t4)
+    .addEdge(t5);
+    //.addEdge(t6);
+
 
   @Test
-  public void connectedComponent() throws Exception {
-    DepthFirstSearch depthFirstSearch = new DepthFirstSearch(new TestExecutionContext().setModel(model.build()));
-    assertThat(depthFirstSearch.getConnectedComponent(v00.build()).size(), is(10));
-    assertThat(depthFirstSearch.getConnectedComponent(ve0.build()).size(), is(3));
-    //System.out.println(depthFirstSearch.getConnectedComponent(v00.build()).toString());
-    System.out.println(depthFirstSearch.getConnectedComponent(s1.build()).toString());
+  public void reachableStateTest() throws Exception {
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    System.out.println(allTransitionState.getReachableStates(s1.build()).toString());
+
   }
+
 }
