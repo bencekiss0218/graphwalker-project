@@ -6,6 +6,9 @@ import org.graphwalker.core.machine.Context;
 import org.graphwalker.core.model.Element;
 import org.graphwalker.core.model.Path;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import static org.graphwalker.core.common.Objects.isNull;
 
 public class AllTransitionSatePath extends PathGeneratorBase<StopCondition> {
@@ -16,7 +19,7 @@ public class AllTransitionSatePath extends PathGeneratorBase<StopCondition> {
     setStopCondition(stopCondition);
   }
 
-  /*@Override
+  @Override
   public Context getNextStep(){
     Context context = super.getNextStep();
     if (isNull(path)) {
@@ -27,11 +30,13 @@ public class AllTransitionSatePath extends PathGeneratorBase<StopCondition> {
   }
 
   private Path<Element> getPath(Context context) {
-    //return context.getAlgorithm(AllTransitionState.class).getReachableStates(context.getCurrentElement());
-  }*/
+    List<Path<Element>> paths;
+    paths = context.getAlgorithm(AllTransitionState.class).returnTestSet(context.getCurrentElement());
+    return paths.get(0);
+  }
 
   @Override
   public boolean hasNextStep() {
-    return false;
+    return !getStopCondition().isFulfilled();
   }
 }

@@ -3,6 +3,7 @@ package org.graphwalker.core.algorithm;
 import static org.hamcrest.core.Is.is;
 import static org.junit.Assert.assertThat;
 
+import org.graphwalker.core.graphgenerator.RandomGraphGenerator;
 import org.graphwalker.core.machine.TestExecutionContext;
 import org.graphwalker.core.model.Edge;
 import org.graphwalker.core.model.Model;
@@ -34,44 +35,58 @@ public class BreadthFirstSearchTest {
   private static final Edge v2e3 = new Edge().setName("v2e3").setSourceVertex(v2).setTargetVertex(v1);
   private static final Edge v2e4 = new Edge().setName("v2e4").setSourceVertex(v2).setTargetVertex(v1);
 
+  private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
+  private static final Model model = rgg.generateRandomGraph(2,2,2);
+
   //robodog
-  private static final Vertex s1 = new Vertex().setName("s1");
-  private static final Vertex s2 = new Vertex().setName("s2");
-  private static final Edge t1 = new Edge().setName("t1").setSourceVertex(s1).setTargetVertex(s2);
-  private static final Edge t2 = new Edge().setName("t2").setSourceVertex(s1).setTargetVertex(s1);
-  private static final Edge t3 = new Edge().setName("t3").setSourceVertex(s1).setTargetVertex(s2);
-  private static final Edge t4 = new Edge().setName("t4").setSourceVertex(s2).setTargetVertex(s1);
-  private static final Edge t5 = new Edge().setName("t5").setSourceVertex(s2).setTargetVertex(s2);
-  private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s2).setTargetVertex(s1);
+  //private static final Vertex s1 = new Vertex().setName("s1");
+  //private static final Vertex s2 = new Vertex().setName("s2");
+  //private static final Edge t1 = new Edge().setName("t1").setSourceVertex(s1).setTargetVertex(s2);
+  //private static final Edge t2 = new Edge().setName("t2").setSourceVertex(s1).setTargetVertex(s1);
+  //private static final Edge t3 = new Edge().setName("t3").setSourceVertex(s1).setTargetVertex(s2);
+  //private static final Edge t4 = new Edge().setName("t4").setSourceVertex(s2).setTargetVertex(s1);
+  //private static final Edge t5 = new Edge().setName("t5").setSourceVertex(s2).setTargetVertex(s2);
+  //private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s2).setTargetVertex(s1);
+
+  private static final Vertex vertex0 = model.getVertices().get(0);
+  //
+  // private static final Vertex vertex0 = new Vertex().setName("v0");
+  //private static final Vertex vertex1 = new Vertex().setName("v1");
+
+  //private static final Edge edge0 = new Edge().setName("edge0").setSourceVertex(vertex0).setTargetVertex(vertex1);
+  //private static final Edge edge1 = new Edge().setName("edge1").setSourceVertex(vertex1).setTargetVertex(vertex0);
+  //private static final Edge edge2 = new Edge().setName("edge2").setSourceVertex(vertex0).setTargetVertex(vertex0);
+  //private static final Edge edge3 = new Edge().setName("edge3").setSourceVertex(vertex1).setTargetVertex(vertex0);
 
 
 
-  private static final Model model = new Model()
-    .addEdge(e1)
-    .addEdge(e2)
-    .addEdge(e3)
-    .addEdge(e4)
-    .addEdge(e5)
-    .addEdge(ee1)
-    .addEdge(v1e1)
-    .addEdge(v1e2)
-    .addEdge(v2e3)
-    .addEdge(v2e4)
-    .addEdge(t1)
-    .addEdge(t2)
-    .addEdge(t3)
-    .addEdge(t4)
-    .addEdge(t5)
-    .addEdge(t6);
+  //private static final Model model = new Model()
+  //  //.addEdge(edge0)
+  //  //.addEdge(edge1)
+  //  //.addEdge(edge2)
+  //  //.addEdge(edge3)
+  //  ;
 
   @Test
   public void connectedComponent() throws Exception {
     BreadthFirstSearch breadthFirstSearch = new BreadthFirstSearch(new TestExecutionContext().setModel(model.build()));
+    //Vertex vertex0 = new Vertex().setName("v0");
+    //Vertex vertex1 = new Vertex().setName("v1");
+    //Edge edge0 = new Edge().setName("edge0").setSourceVertex(vertex0).setTargetVertex(vertex1);
+    //Edge edge1 = new Edge().setName("edge1").setSourceVertex(vertex1).setTargetVertex(vertex0);
+    //Edge edge2 = new Edge().setName("edge2").setSourceVertex(vertex0).setTargetVertex(vertex0);
+    //Edge edge3 = new Edge().setName("edge3").setSourceVertex(vertex1).setTargetVertex(vertex0);
+    //model.addEdge(edge0)
+    //  .addEdge(edge1)
+    //  .addEdge(edge2)
+    //  .addEdge(edge3);
+
     /*assertThat(breadthFirstSearch.getConnectedComponent(v00.build()).size(), is(10));
     assertThat(breadthFirstSearch.getConnectedComponent(ve0.build()).size(), is(3));*/
    //System.out.println(breadthFirstSearch.getConnectedComponent(v00.build()).toString());
    //System.out.println(breadthFirstSearch.getConnectedComponent(v1.build()).toString());
-    System.out.println(breadthFirstSearch.getConnectedComponent(s1.build()).toString());
+    breadthFirstSearch.getConnectedComponents(vertex0.build());
+    System.out.println(breadthFirstSearch.getConnectedVertices().toString());
   }
 
 }
