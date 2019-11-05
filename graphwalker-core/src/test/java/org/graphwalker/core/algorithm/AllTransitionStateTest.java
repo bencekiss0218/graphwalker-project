@@ -29,16 +29,28 @@ public class AllTransitionStateTest {
   private static final Edge e0 = new Edge().setName("e0").setSourceVertex(v0).setTargetVertex(v1);
   private static final Edge e1 = new Edge().setName("e1").setSourceVertex(v1).setTargetVertex(v2);
   private static final Edge e2 = new Edge().setName("e2").setSourceVertex(v2).setTargetVertex(v0);
-  private static final Edge e3 = new Edge().setName("e3").setSourceVertex(v0).setTargetVertex(v0);
-  private static final Edge e4 = new Edge().setName("e4").setSourceVertex(v1).setTargetVertex(v1);
+  private static final Edge e3 = new Edge().setName("e3").setSourceVertex(v0).setTargetVertex(v1);
+  private static final Edge e4 = new Edge().setName("e4").setSourceVertex(v1).setTargetVertex(v0);
   private static final Edge e5 = new Edge().setName("e5").setSourceVertex(v2).setTargetVertex(v1);
+
+  //small
+  private static final Vertex k1 = new Vertex().setName("k1");
+  private static final Vertex k2 = new Vertex().setName("k2");
+  private static final Vertex k3 = new Vertex().setName("k3");
+  private static final Edge l1 = new Edge().setName("l1").setSourceVertex(k1).setTargetVertex(k2);
+  private static final Edge l2 = new Edge().setName("l2").setSourceVertex(k2).setTargetVertex(k1);
+  private static final Edge l3 = new Edge().setName("l3").setSourceVertex(k2).setTargetVertex(k3);
+
 
 
   private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
-  private static final Model modell = rgg.generateRandomGraph(3,2,2);
+  private static final Model modell = rgg.generateRandomGraph(4,2,2);
   private static final Vertex vert = modell.getVertices().get(0);
 
   private static final Model model = new Model()
+    .addEdge(l1)
+    .addEdge(l2)
+    .addEdge(l3)
     .addEdge(e0)
     .addEdge(e1)
     .addEdge(e2)
@@ -62,7 +74,7 @@ public class AllTransitionStateTest {
       System.out.println("---EDGE--- " + e.build() + " SOURCE----- " + e.build().getSourceVertex() + " TARGET ---- " + e.build().getTargetVertex());
     }
 
-    System.out.println(allTransitionState.returnTestSet(v0.build()));
+    System.out.println(allTransitionState.returnTestSet(k1.build()));
 
   }
 

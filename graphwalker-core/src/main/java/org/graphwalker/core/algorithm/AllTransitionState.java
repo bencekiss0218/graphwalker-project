@@ -62,9 +62,10 @@ public class AllTransitionState implements Algorithm {
 
 
     for(Element elem : allTransitionOfTheModel){
-      getTransitionStates((RuntimeEdge) elem);
+      transitionStatesNeighboursAndPath((RuntimeEdge) elem);
     }
     System.out.println("States for each transitions: " + transitionStates);
+
     System.out.println("Path for each transition BEFORE " + transitionPaths);
     getPathForTransitions(allTransitionOfTheModel);
     System.out.println("Path for each transition AFTER " + transitionPaths);
@@ -77,10 +78,9 @@ public class AllTransitionState implements Algorithm {
 
   }
 
-  public void getTransitionStates(RuntimeEdge transition){
+  public void getTransitionStatesAndPath(RuntimeEdge transition, Path<Element> transitionPath, List<Element> transitionStates){
+
     Deque<RuntimeEdge> q = new ArrayDeque<>();
-    List<Element> states = new ArrayList<Element>();
-    Path<Element> transitionPath = new Path<>();
     RuntimeVertex vertexSource = transition.getSourceVertex();
     RuntimeVertex vertexTarget = transition.getTargetVertex();
     Map<Element, ElementStatus> transitionStatusMap = new HashMap<>();
@@ -88,6 +88,63 @@ public class AllTransitionState implements Algorithm {
 
     transitionStatusMap.put(transition, ElementStatus.REACHABLE);
 
+
+    if(vertexSource.equals(vertexTarget))
+      transitionStates.add(vertexSource);
+    else{
+      transitionStates.add(vertexSource);
+      transitionStates.add(vertexTarget);
+    }
+
+    transitionPath.add(vertexSource);
+    transitionPath.add(transition);
+    transitionPath.add(vertexTarget);
+
+    for (RuntimeEdge edge : context.getModel().getOutEdges(vertexTarget)) {
+      RuntimeVertex vertex = edge.getTargetVertex();
+      if((!transitionStates.contains(vertex) || ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) && transitionStates.size() != this.states.size()) {
+        q.add(edge);
+      }
+    }
+
+    while(!q.isEmpty()) {
+      RuntimeEdge subTransition = q.pop();
+      transitionStatusMap.put(subTransition, ElementStatus.REACHABLE);
+      RuntimeVertex subVertexSource = subTransition.getSourceVertex();
+      RuntimeVertex subVertexTarget = subTransition.getTargetVertex();
+
+     // System.out.println("POP: " + subTransition);
+
+      if (transitionStates.size() != this.states.size()) {
+
+        if (subVertexSource.equals(transitionPath.getLast())) {
+          transitionPath.add(subTransition);
+          transitionPath.add(subVertexTarget);
+
+          if(!transitionStates.contains(subVertexTarget))
+            transitionStates.add(subVertexTarget);
+        }
+
+        //if (!transitionStates.contains(subVertexTarget)) {
+        //  transitionStates.add(subVertexTarget);
+        //}
+        for (RuntimeEdge edge : context.getModel().getOutEdges(subVertexTarget)) {
+          RuntimeVertex vertex = edge.getTargetVertex();
+          if(!q.contains(edge)) {
+            if ((!transitionStates.contains(vertex) || ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) && transitionStates.size() != this.states.size()) {
+              //System.out.println("add to Q: " + edge);
+              q.add(edge);
+            }
+          }
+        }
+      }
+    }
+  }
+
+  public void transitionStatesNeighboursAndPath(RuntimeEdge transition){
+    List<Element> states = new ArrayList<Element>();
+    Path<Element> transitionPath = new Path<>();
+    RuntimeVertex vertexSource = transition.getSourceVertex();
 
     //get the transitionNeighbours for the given transition
     List<Element> neighbourTransitions = new ArrayList<Element>();
@@ -97,65 +154,16 @@ public class AllTransitionState implements Algorithm {
     }
     transitionNeighbours.put(transition, neighbourTransitions);
 
-    if(vertexSource.equals(vertexTarget))
-      states.add(vertexSource);
-    else{
-      states.add(vertexSource);
-      states.add(vertexTarget);
-    }
-
-    transitionPath.add(vertexSource);
-    transitionPath.add(transition);
-    transitionPath.add(vertexTarget);
-
-    for (RuntimeEdge edge : context.getModel().getOutEdges(vertexTarget)) {
-      RuntimeVertex vertex = edge.getTargetVertex();
-      //MODIFIED VISSZAEL MIATT
-      if((!states.contains(vertex) || ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) && states.size() != this.states.size()) {
-        q.add(edge);
-      }
-    }
-
-
-    while(!q.isEmpty()) {
-      List<Element> subStates = new ArrayList<>();
-      RuntimeEdge subTransition = q.pop();
-      transitionStatusMap.put(subTransition, ElementStatus.REACHABLE);
-      RuntimeVertex subVertexSource = subTransition.getSourceVertex();
-      RuntimeVertex subVertexTarget = subTransition.getTargetVertex();
-
-      if (states.size() != this.states.size()) {
-        subStates.add(subVertexSource);
-
-        if (!subStates.contains(subVertexTarget)) {
-          transitionPath.add(subTransition);
-          transitionPath.add(subVertexTarget);
-          subStates.add(subVertexTarget);
-        }
-
-        if (!states.contains(subVertexTarget)) {
-          states.add(subVertexTarget);
-        }
-        for (RuntimeEdge edge : context.getModel().getOutEdges(subVertexTarget)) {
-          RuntimeVertex vertex = edge.getTargetVertex();
-          if ((!states.contains(vertex) || ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) && states.size() != this.states.size()) {
-            q.add(edge);
-          }
-        }
-      }
-    }
+    getTransitionStatesAndPath(transition, transitionPath, states);
 
     transitionPaths.put(transition,transitionPath);
     transitionStates.put(transition, states);
 
   }
 
-  private void getAlternativeTransitionStates(RuntimeEdge transition, Path<Element> alternativePath, List<Element> alternativeStates){
+  private void alternativeTransitionStateAndPathWithNeighbours(RuntimeEdge transition, Path<Element> alternativePath, List<Element> alternativeStates){
     Deque<RuntimeEdge> q = new ArrayDeque<>();
     RuntimeEdge neighbourTransition;
-    Map<Element, ElementStatus> transitionStatusMap = new HashMap<>();
-    transitionStatusMap = createElementStatusMap(allTransitionOfTheModel);
-
 
     for (Element edge : transitionNeighbours.get(transition)) {
       RuntimeEdge rEdge = (RuntimeEdge) edge;
@@ -164,57 +172,9 @@ public class AllTransitionState implements Algorithm {
 
     if(!q.isEmpty()) {
       neighbourTransition = q.pop();
-      RuntimeVertex vertexSource = neighbourTransition.getSourceVertex();
-      RuntimeVertex vertexTarget = neighbourTransition.getTargetVertex();
-      transitionStatusMap.put(neighbourTransition,ElementStatus.REACHABLE);
-
-      if (vertexSource.equals(vertexTarget))
-        alternativeStates.add(vertexSource);
-      else {
-        alternativeStates.add(vertexSource);
-        alternativeStates.add(vertexTarget);
-
-      }
-      alternativePath.add(vertexSource);
-      alternativePath.add(neighbourTransition);
-      alternativePath.add(vertexTarget);
-
-      for (RuntimeEdge edge : context.getModel().getOutEdges(vertexTarget)) {
-        RuntimeVertex vertex = edge.getTargetVertex();
-        //MODIFIED VISSZAEL MIATT
-        if((!alternativeStates.contains(vertex) || ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) && alternativeStates.size() != this.states.size()) {
-          q.add(edge);
-        }
-      }
+      getTransitionStatesAndPath(neighbourTransition, alternativePath, alternativeStates);
     }
 
-    while(!q.isEmpty()) {
-      List<Element> subStates = new ArrayList<>();
-      RuntimeEdge subTransition = q.pop();
-      transitionStatusMap.put(subTransition, ElementStatus.REACHABLE);
-      RuntimeVertex subVertexSource = subTransition.getSourceVertex();
-      RuntimeVertex subVertexTarget = subTransition.getTargetVertex();
-
-      if (alternativeStates.size() != this.states.size()) {
-        subStates.add(subVertexSource);
-
-        if (!subStates.contains(subVertexTarget)) {
-          alternativePath.add(subTransition);
-          alternativePath.add(subVertexTarget);
-          subStates.add(subVertexTarget);
-        }
-
-        if (!alternativeStates.contains(subVertexTarget)) {
-          alternativeStates.add(subVertexTarget);
-        }
-        for (RuntimeEdge edge : context.getModel().getOutEdges(subVertexTarget)) {
-          RuntimeVertex vertex = edge.getTargetVertex();
-          if ((!alternativeStates.contains(vertex) || ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) && alternativeStates.size() != this.states.size()) {
-            q.add(edge);
-          }
-        }
-      }
-    }
   }
 
   private void removeDuplicatePaths(Map<Element,Path<Element>> map) {
@@ -258,12 +218,15 @@ public class AllTransitionState implements Algorithm {
       //end = copyOfTransitionPaths.get(keyTransition).get(copyOfTransitionPaths.get(keyTransition).size() - 1);
       end = transitionPaths.get(keyTransition).getLast();
 
-      if(transitionPaths.get(keyTransition).size() > max){
-        max = transitionPaths.get(keyTransition).size();
-        longestTransition = transitionPaths.get(keyTransition);
-      }
+
 
       for(Element j : transitionPaths.keySet()){
+        //longest path
+        if(transitionPaths.get(j).size() > max){
+          max = transitionPaths.get(j).size();
+          longestTransition = transitionPaths.get(j);
+        }
+
         if(keyTransition.equals(j))
           continue;
 
@@ -301,7 +264,7 @@ public class AllTransitionState implements Algorithm {
 
     for(Element key : alterTransitionPaths.keySet()){
 
-      System.out.println("AAAAAA: " + transitionStates.get(key)  + "BBBBBB: " +states ) ;
+      System.out.println("A: " + transitionStates.get(key)  + "B: " +states ) ;
       if(equalsIgnore(transitionStates.get(key),states) ) {
 
         List<Element> copyOfalterTransitionPaths = new ArrayList<>(alterTransitionPaths.get(key));
@@ -328,7 +291,7 @@ public class AllTransitionState implements Algorithm {
     for(Element edge : allTransitionOfTheModel) {
       alternativePath = new Path<>();
       alternativeStates = new ArrayList<>();
-      getAlternativeTransitionStates((RuntimeEdge) edge, alternativePath, alternativeStates);
+      alternativeTransitionStateAndPathWithNeighbours((RuntimeEdge) edge, alternativePath, alternativeStates);
 
       System.out.println("Transition: " + edge + " ALTER STATES: " + alternativeStates + " ALTER PATH: " + alternativePath);
 

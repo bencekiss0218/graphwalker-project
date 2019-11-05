@@ -39,9 +39,9 @@ public class AllTransitionTransitionTest {
   private static final Edge t5 = new Edge().setName("t5").setSourceVertex(s2).setTargetVertex(s2);
   private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s2).setTargetVertex(s1);
 
-  //private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
-  //private static final Model modell = rgg.generateRandomGraph(2,2,2);
-  //private static final Vertex vertex = modell.getVertices().get(0);
+  private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
+  private static final Model modell = rgg.generateRandomGraph(4,2,2);
+  private static final Vertex vertex = modell.getVertices().get(0);
 
   private static final Model model = new Model()
     .addEdge(e1)
@@ -59,9 +59,9 @@ public class AllTransitionTransitionTest {
 
   @Test
   public void testSet() throws Exception {
-    AllTransitionTransition allTransitionTransition = new AllTransitionTransition(new TestExecutionContext().setModel(model.build()));
+    AllTransitionTransition allTransitionTransition = new AllTransitionTransition(new TestExecutionContext().setModel(modell.build()));
 
-    System.out.println(allTransitionTransition.returnTransitionTransitions(s1.build()));
+    System.out.println(allTransitionTransition.returnTransitionTransitions(vertex.build()));
 
   }
 
