@@ -26,12 +26,15 @@ public class AllTransitionStateTest {
   private static final Vertex v0 = new Vertex().setName("v0");
   private static final Vertex v1 = new Vertex().setName("v1");
   private static final Vertex v2 = new Vertex().setName("v2");
+  private static final Vertex v3 = new Vertex().setName("v3");
   private static final Edge e0 = new Edge().setName("e0").setSourceVertex(v0).setTargetVertex(v1);
   private static final Edge e1 = new Edge().setName("e1").setSourceVertex(v1).setTargetVertex(v2);
-  private static final Edge e2 = new Edge().setName("e2").setSourceVertex(v2).setTargetVertex(v0);
-  private static final Edge e3 = new Edge().setName("e3").setSourceVertex(v0).setTargetVertex(v1);
-  private static final Edge e4 = new Edge().setName("e4").setSourceVertex(v1).setTargetVertex(v0);
-  private static final Edge e5 = new Edge().setName("e5").setSourceVertex(v2).setTargetVertex(v1);
+  private static final Edge e2 = new Edge().setName("e2").setSourceVertex(v2).setTargetVertex(v3);
+  private static final Edge e3 = new Edge().setName("e3").setSourceVertex(v3).setTargetVertex(v0);
+  private static final Edge e4 = new Edge().setName("e4").setSourceVertex(v0).setTargetVertex(v1);
+  private static final Edge e5 = new Edge().setName("e5").setSourceVertex(v1).setTargetVertex(v0);
+  private static final Edge e6 = new Edge().setName("e6").setSourceVertex(v2).setTargetVertex(v1);
+  private static final Edge e7 = new Edge().setName("e7").setSourceVertex(v3).setTargetVertex(v1);
 
   //small
   private static final Vertex k1 = new Vertex().setName("k1");
@@ -44,7 +47,7 @@ public class AllTransitionStateTest {
 
 
   private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
-  private static final Model modell = rgg.generateRandomGraph(4,2,2);
+  private static final Model modell = rgg.generateRandomGraph(5,2,2);
   private static final Vertex vert = modell.getVertices().get(0);
 
   private static final Model model = new Model()
@@ -57,6 +60,8 @@ public class AllTransitionStateTest {
     .addEdge(e3)
     .addEdge(e4)
     .addEdge(e5)
+    .addEdge(e6)
+    .addEdge(e7)
     .addEdge(t1)
     .addEdge(t2)
     .addEdge(t3)
@@ -67,14 +72,14 @@ public class AllTransitionStateTest {
 
   @Test
   public void testSet() throws Exception {
-    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(modell.build()));
 
-    List<Edge> edges = model.getEdges();
+    List<Edge> edges = modell.getEdges();
     for(Edge e : edges){
       System.out.println("---EDGE--- " + e.build() + " SOURCE----- " + e.build().getSourceVertex() + " TARGET ---- " + e.build().getTargetVertex());
     }
 
-    System.out.println(allTransitionState.returnTestSet(k1.build()));
+    System.out.println(allTransitionState.returnTestSet(vert.build()));
 
   }
 

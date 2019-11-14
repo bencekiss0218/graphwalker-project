@@ -31,8 +31,14 @@ public class AllTransitionSatePath extends PathGeneratorBase<StopCondition> {
 
   private Path<Element> getPath(Context context) {
     List<Path<Element>> paths;
+    Path<Element> finalPath = new Path<>();
     paths = context.getAlgorithm(AllTransitionState.class).returnTestSet(context.getCurrentElement());
-    return paths.get(0);
+
+    for(Path<Element> path : paths){
+      finalPath.addAll(path);
+    }
+
+    return finalPath;
   }
 
   @Override

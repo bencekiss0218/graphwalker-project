@@ -1,12 +1,15 @@
 package org.graphwalker.core.graphgenerator;
 
+import netscape.javascript.JSObject;
 import org.graphwalker.core.model.Edge;
 import org.graphwalker.core.model.Model;
 import org.graphwalker.core.model.Vertex;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
+import java.util.*;
 
 public class RandomGraphGenerator {
 
@@ -14,7 +17,7 @@ public class RandomGraphGenerator {
 
   private final Random random = new Random(System.nanoTime());
 
-  public Model generateRandomGraph(int numberOfVertices, int minOutEdge, int maxOutEdge){
+  public Model generateRandomGraph(int numberOfVertices, int minOutEdge, int maxOutEdge) {
     Model model = new Model();
     List<Vertex> vertices = new ArrayList<>();
     List<Edge> edges = new ArrayList<>();
@@ -25,7 +28,28 @@ public class RandomGraphGenerator {
     Edge edge;
     int edgeIndex;
 
+
+    JSONArray modelsArray = new JSONArray();
+    JSONArray verticesArray = new JSONArray();
+    JSONArray edgesArray = new JSONArray();
+    JSONObject modelObj = new JSONObject();
+    JSONObject vertexObj = new JSONObject();
+    JSONObject edgeObj = new JSONObject();
+    JSONObject propertiesObj = new JSONObject();
+    JSONObject contextObj = new JSONObject();
+
+    try {
+      modelObj.put("name", "firstModel");
+      modelObj.put("id", 1323);
+      modelObj.put("generator", "random(vertex_coverage(100))");
+      //modelObj.put("actions", "");
+    }catch (Exception e){
+      System.out.println(e);
+    }
+
     for(int i = 0; i < numberOfVertices + 1; i++){
+
+
       if(i<numberOfVertices){
         vertexId = "v_" + i;
         vertexName = "v" + i;
@@ -46,7 +70,6 @@ public class RandomGraphGenerator {
           edges.add(edge);
           model.addEdge(edge);
         }
-
       }
     }
 
@@ -66,6 +89,57 @@ public class RandomGraphGenerator {
       }
     }
 
+
+    try {
+      int xCord = 300;
+      int yCord = 250;
+      for(Vertex v : model.getVertices()){
+        propertiesObj = new JSONObject();
+        xCord += 100;
+        vertexObj = new JSONObject();
+        vertexObj.put("id", v.getId());
+        vertexObj.put("name", v.getName());
+        propertiesObj.put("x",xCord);
+        propertiesObj.put("y",yCord);
+        vertexObj.put("properties", propertiesObj);
+        verticesArray.put(vertexObj);
+      }
+    }catch (Exception e){
+      System.out.println(e);
+    }
+
+    try {
+      for(Edge e : model.getEdges()){
+        edgeObj = new JSONObject();
+        edgeObj.put("id", e.getId());
+        edgeObj.put("name", e.getName());
+        edgeObj.put("sourceVertexId", e.getSourceVertex().getId());
+        edgeObj.put("targetVertexId", e.getTargetVertex().getId());
+
+        edgesArray.put(edgeObj);
+      }
+    }catch (Exception e){
+      System.out.println(e);
+    }
+
+    try {
+      modelObj.put("vertices", verticesArray);
+      modelObj.put("edges", edgesArray);
+      modelObj.put("startElementId", vertices.get(0).getId());
+    }catch (Exception e){
+      System.out.println(e);
+    }
+
+    modelsArray.put(modelObj);
+    try {
+      contextObj.put("models", modelsArray);
+    }catch (Exception e){
+      System.out.println(e);
+    }
+
+    System.out.println(contextObj);
+
     return model;
   }
+
 }

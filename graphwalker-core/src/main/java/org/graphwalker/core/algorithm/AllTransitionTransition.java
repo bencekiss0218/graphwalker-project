@@ -40,116 +40,7 @@ public class AllTransitionTransition {
     return transitionTransitions;
   }
 
-  /*private void getTransitionTransitions(RuntimeEdge transition){
-    Deque<RuntimeEdge> q = new ArrayDeque<>();
-    List<Element> states = new ArrayList<Element>();
-    List<Element> transitionTransitions = new ArrayList<Element>();
-    Path<Element> transitionPath = new Path<>();
-    Map<Element, ElementStatus> transitionStatusMap = new HashMap<>();
-    List<Element> unreachedTransitions = new ArrayList<>();
-    transitionStatusMap = createElementStatusMap(allTransitions);
 
-    //transitionStatusMap.put(transition, ElementStatus.REACHABLE);
-
-    Vertex.RuntimeVertex vertexSource = transition.getSourceVertex();
-    Vertex.RuntimeVertex vertexTarget = transition.getTargetVertex();
-
-    if(vertexSource.equals(vertexTarget))
-      states.add(vertexSource);
-    else{
-      states.add(vertexSource);
-      states.add(vertexTarget);
-    }
-
-    transitionPath.add(vertexSource);
-    transitionPath.add(transition);
-    transitionPath.add(vertexTarget);
-
-    //get the transitionNeighbours for the given transition
-    List<Element> neighbourTransitions = new ArrayList<Element>();
-    for (RuntimeEdge edge : context.getModel().getOutEdges(vertexSource)) {
-      if(!edge.equals(transition))
-        neighbourTransitions.add(edge);
-    }
-    transitionNeighbours.put(transition, neighbourTransitions);
-
-    for (RuntimeEdge edge : context.getModel().getOutEdges(vertexTarget)) {
-      Vertex.RuntimeVertex target = edge.getTargetVertex();
-      Vertex.RuntimeVertex src = edge.getSourceVertex();
-      if(target.equals(src) && AllTransitionTransition.ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))  ){
-        if(edge.equals(transition)){
-          transitionPath.add(edge);
-          transitionPath.add(target);
-          transitionStatusMap.put(edge, AllTransitionTransition.ElementStatus.REACHABLE);
-        }else {
-          transitionPath.add(edge);
-          transitionPath.add(target);
-          transitionTransitions.add(edge);
-          transitionStatusMap.put(edge, AllTransitionTransition.ElementStatus.REACHABLE);
-        }
-      }
-
-      if( transitionTransitions.size() != this.allTransitions.size() && AllTransitionTransition.ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) {
-        q.add(edge);
-        unreachedTransitions.add(edge);
-      }
-    }
-
-    while(!q.isEmpty()) {
-
-
-      RuntimeEdge subTransition = q.pop();
-      Vertex.RuntimeVertex subVertexSource = subTransition.getSourceVertex();
-      Vertex.RuntimeVertex subVertexTarget = subTransition.getTargetVertex();
-
-      System.out.println("pop: " + subTransition);
-      if (transitionTransitions.size() != this.allTransitions.size() - 1) {
-
-        boolean condition = (subVertexSource.equals(transitionPath.getLast()) && subVertexSource.equals(subVertexTarget));
-        System.out.println( " SubvertexSource is : " + subVertexSource + " getLast: " + transitionPath.getLast() + "Condition is : " + condition + " tpath " + transitionPath + "Traansitions: " + transitionTransitions);
-        if (((subVertexSource.equals(transitionPath.getLast()) && subVertexSource.equals(subVertexTarget)) || subVertexSource.equals(transitionPath.getLast())) && !subTransition.equals(transition)) {
-          transitionStatusMap.put(subTransition, AllTransitionTransition.ElementStatus.REACHABLE);
-          unreachedTransitions.remove(subTransition);
-          transitionPath.add(subTransition);
-          transitionPath.add(subVertexTarget);
-          if(unreachedTransitions.isEmpty())
-            transitionStatusMap.put(transition, ElementStatus.REACHABLE);
-
-          if(!transitionTransitions.contains(subTransition))
-            transitionTransitions.add(subTransition);
-
-        }else if(!unreachedTransitions.isEmpty() && subTransition.equals(transition)){
-          transitionPath.add(subTransition);
-          transitionPath.add(subVertexTarget);
-        }
-
-
-        List<RuntimeEdge> outedges =context.getModel().getOutEdges(subVertexTarget);
-        for (RuntimeEdge edge : outedges) {
-          Vertex.RuntimeVertex target = edge.getTargetVertex();
-          Vertex.RuntimeVertex src = edge.getSourceVertex();
-          if(target.equals(src) && AllTransitionTransition.ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) {
-            transitionPath.add(edge);
-            transitionPath.add(target);
-            transitionTransitions.add(edge);
-            transitionStatusMap.put(edge, AllTransitionTransition.ElementStatus.REACHABLE);
-          }
-          if(AllTransitionTransition.ElementStatus.UNREACHABLE.equals(transitionStatusMap.get(edge))) {
-            if ((!transitionTransitions.contains(edge))
-                 && transitionTransitions.size() != this.allTransitions.size() - 1) {
-              //System.out.println("add to Q: " + edge);
-              q.add(edge);
-              transitionTransitions.add(edge);
-            }
-          }
-        }
-      }
-    }
-
-    System.out.println(transitionPath);
-    transitionPaths.put(transition,transitionPath);
-    this.transitionTransitions.put(transition, transitionTransitions);
-  }*/
 
   private void getReachableTransitions(RuntimeEdge transition){
     Deque<RuntimeEdge> q = new ArrayDeque<>();
@@ -182,6 +73,7 @@ public class AllTransitionTransition {
     Map<Element, ElementStatus> transitionStatusMap = new HashMap<>();
     List<Element> unreachedTransitions = new ArrayList<>();
     unreachedTransitions = transitionTransitions.get(transition);
+    List<Element> reachedTransitions = new ArrayList<>();
     transitionStatusMap = createElementStatusMap(allTransitions);
     RuntimeEdge nominatedEdge = transition;
     boolean loopEdge = false;
@@ -211,27 +103,21 @@ public class AllTransitionTransition {
 
     while(!q.isEmpty()){
       RuntimeEdge subTransition = q.pop();
-      System.out.println("POP : " + subTransition + "Unreached Transitions: " + unreachedTransitions);
+      //System.out.println("POP : " + subTransition + "Unreached Transitions: " + unreachedTransitions);
       Vertex.RuntimeVertex subVertexTarget = subTransition.getTargetVertex();
 
-      if(loopEdge){
-        nominatedEdge = subTransition;
-      }
-
-      Vertex.RuntimeVertex source = subTransition.getSourceVertex();
       Vertex.RuntimeVertex target = subTransition.getTargetVertex();
 
-      if(unreachedTransitions.isEmpty()){
+      if(unreachedTransitions.size() == reachedTransitions.size()){
         transitionPaths.put(transition,transitionPath);
         return;
       }
 
-
        transitionPath.add(subTransition);
        transitionPath.add(target);
        transitionStatusMap.put(subTransition,ElementStatus.REACHABLE);
-       unreachedTransitions.remove(subTransition);
-
+       reachedTransitions.add(subTransition);
+       //unreachedTransitions.remove(subTransition);
 
       boolean unreachableEdge = false;
       List<RuntimeEdge> outedges = context.getModel().getOutEdges(subVertexTarget);
@@ -259,7 +145,6 @@ public class AllTransitionTransition {
 
     System.out.println("Transition Path : " + transitionPath);
     transitionPaths.put(transition,transitionPath);
-
   }
 
 
