@@ -38,13 +38,11 @@ import org.graphwalker.cli.commands.*;
 import org.graphwalker.cli.util.LoggerUtil;
 import org.graphwalker.cli.util.UnsupportedFileFormat;
 import org.graphwalker.core.event.EventType;
+import org.graphwalker.core.graphgenerator.RandomGraphGenerator;
 import org.graphwalker.core.machine.Context;
 import org.graphwalker.core.machine.MachineException;
 import org.graphwalker.core.machine.SimpleMachine;
-import org.graphwalker.core.model.Edge;
-import org.graphwalker.core.model.Element;
-import org.graphwalker.core.model.Requirement;
-import org.graphwalker.core.model.Vertex;
+import org.graphwalker.core.model.*;
 import org.graphwalker.dsl.antlr.DslException;
 import org.graphwalker.dsl.antlr.generator.GeneratorFactory;
 import org.graphwalker.io.common.ResourceUtils;
@@ -83,6 +81,7 @@ public class CLI {
   private Convert convert;
   private Source source;
   private Check check;
+  private RandomStronglyConnectedGraph randomgraph;
 
   enum Command {
     NONE,
@@ -92,7 +91,8 @@ public class CLI {
     REQUIREMENTS,
     CONVERT,
     SOURCE,
-    CHECK
+    CHECK,
+    RANDOMGRAPH
   }
 
   private Command command = Command.NONE;
@@ -149,6 +149,9 @@ public class CLI {
         check = new Check();
         jc.addCommand("check", check);
 
+        randomgraph = new RandomStronglyConnectedGraph();
+        jc.addCommand("randomgraph", randomgraph);
+
         jc.parse(args);
         jc.usage();
         return;
@@ -182,6 +185,9 @@ public class CLI {
       check = new Check();
       jc.addCommand("check", check);
 
+      randomgraph = new RandomStronglyConnectedGraph();
+      jc.addCommand("randomgraph", randomgraph);
+
       jc.parse(args);
 
       // Parse for commands
@@ -207,7 +213,10 @@ public class CLI {
         } else if (jc.getParsedCommand().equalsIgnoreCase("check")) {
           command = Command.SOURCE;
           runCommandCheck();
-        }
+        }else if (jc.getParsedCommand().equalsIgnoreCase("randomgraph")) {
+        command = Command.RANDOMGRAPH;
+        runCommandRandomGraph();
+      }
       }
 
       // No commands or options were found
@@ -467,6 +476,16 @@ public class CLI {
         System.out.println(Util.getStepAsJSON(machine, offline.verbose, offline.unvisited).toString());
       }
     }
+  }
+
+  private void runCommandRandomGraph() throws Exception, UnsupportedFileFormat {
+
+    int numberOfVertices = Integer.parseInt(randomgraph.input);
+    int outEdges = Integer.parseInt(randomgraph.output);
+    RandomGraphGenerator rgg = new RandomGraphGenerator();
+    Model model = rgg.generateRandomGraph(numberOfVertices,outEdges,outEdges);
+    rgg.writeGeneratedGraph(rgg.getContextObj());
+
   }
 
   public List<Context> getContextsWithPathGenerators(Iterator itr) throws Exception, UnsupportedFileFormat {

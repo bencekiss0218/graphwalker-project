@@ -31,13 +31,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 import org.graphwalker.core.condition.*;
-import org.graphwalker.core.generator.AStarPath;
-import org.graphwalker.core.generator.CombinedPath;
-import org.graphwalker.core.generator.PathGenerator;
-import org.graphwalker.core.generator.QuickRandomPath;
-import org.graphwalker.core.generator.RandomPath;
-import org.graphwalker.core.generator.ShortestAllPaths;
-import org.graphwalker.core.generator.WeightedRandomPath;
+import org.graphwalker.core.generator.*;
 import org.graphwalker.dsl.generator.GeneratorParser;
 import org.graphwalker.dsl.generator.GeneratorParserBaseListener;
 
@@ -100,7 +94,10 @@ public class GeneratorLoader extends GeneratorParserBaseListener {
       stopCondition = stopConditions.get(0);
     }
     String generatorName = context.getChild(0).getText().toLowerCase();
-    if ("random".equals(generatorName) || "randompath".equals(generatorName)) {
+    if ("alltransitionstate".equals(generatorName) || "all_transition_state".equals(generatorName)) {
+      pathGenerators.add(new AllTransitionStatePath(stopCondition));
+    }
+    else if ("random".equals(generatorName) || "randompath".equals(generatorName)) {
       pathGenerators.add(new RandomPath(stopCondition));
     } else if ("weighted_random".equals(generatorName) || "weightedrandompath".equals(generatorName)) {
       pathGenerators.add(new WeightedRandomPath(stopCondition));

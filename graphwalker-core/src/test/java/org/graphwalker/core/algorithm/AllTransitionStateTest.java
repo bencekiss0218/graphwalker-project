@@ -72,14 +72,14 @@ public class AllTransitionStateTest {
 
   @Test
   public void testSet() throws Exception {
-    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(modell.build()));
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
 
     List<Edge> edges = modell.getEdges();
     for(Edge e : edges){
       System.out.println("---EDGE--- " + e.build() + " SOURCE----- " + e.build().getSourceVertex() + " TARGET ---- " + e.build().getTargetVertex());
     }
 
-    System.out.println(allTransitionState.returnTestSet(vert.build()));
+    System.out.println(allTransitionState.returnTestSet(v0.build()));
 
   }
 

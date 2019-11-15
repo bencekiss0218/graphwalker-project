@@ -1,6 +1,6 @@
 package org.graphwalker.core.graphgenerator;
 
-import com.sun.xml.internal.ws.api.model.wsdl.WSDLOutput;
+
 import org.graphwalker.core.model.Edge;
 import org.graphwalker.core.model.Model;
 import org.graphwalker.core.graphgenerator.RandomGraphGenerator;
@@ -11,7 +11,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RandomGraphGeneratorTest {
-  RandomGraphGenerator rgg = new RandomGraphGenerator();
+  /*RandomGraphGenerator rgg = new RandomGraphGenerator();
   Model model = rgg.generateRandomGraph(5,2,2);
 
 
@@ -31,5 +31,5 @@ public class RandomGraphGeneratorTest {
       System.out.println("Edge: " + re + " -- SourceVertex: " + re.getSourceVertex() + " -- TargetVertex: " + re.getTargetVertex());
       e.build();
     }
-  }
+  }*/
 }

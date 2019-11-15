@@ -32,9 +32,7 @@ public class AllTransitionState implements Algorithm {
   }
 
 
-  public Map<Element,List<Element>> getReachableStates(Element root){
-    clearLists();
-    allReachableStates(root);
+  public Map<Element,List<Element>> getReachableStates(){
     return transitionStates;
   }
 
@@ -48,6 +46,18 @@ public class AllTransitionState implements Algorithm {
   public List<Path<Element>> returnTestSet(Element root){
     clearLists();
     allReachableStates(root);
+
+    List<Path<Element>> inCaseOfNotStronglyConnectedGraph = new ArrayList<>();
+    Path<Element> path = new Path<>();
+    path.add(root);
+    inCaseOfNotStronglyConnectedGraph.add(path);
+    for(Element transition : allTransitionOfTheModel){
+      if(!equalsIgnore(transitionStates.get(transition),states)){
+        System.out.println("GRAPH IS NOT STRONGLY CONNECTED");
+        return inCaseOfNotStronglyConnectedGraph;
+      }
+    }
+
     return testSet;
   }
 
@@ -86,7 +96,7 @@ public class AllTransitionState implements Algorithm {
   }
 
 
-   private List<Element> getReachableStates(RuntimeEdge transition){
+  private List<Element> getReachableStates(RuntimeEdge transition){
     Deque<RuntimeEdge> q = new ArrayDeque<>();
     List<Element> transitionStates = new ArrayList<Element>();
     Map<Element, ElementStatus> transitionStatusMap = new HashMap<>();
@@ -103,7 +113,7 @@ public class AllTransitionState implements Algorithm {
       transitionStates.add(vertexTarget);
     }
 
-     transitionStatusMap.put(transition, ElementStatus.REACHABLE);
+    transitionStatusMap.put(transition, ElementStatus.REACHABLE);
 
     for (RuntimeEdge edge : context.getModel().getOutEdges(vertexTarget)) {
       if(!edge.equals(transition)) {
@@ -119,16 +129,16 @@ public class AllTransitionState implements Algorithm {
 
         transitionStates.add(subVertexTarget);
       }
-        for (RuntimeEdge edge : context.getModel().getOutEdges(subVertexTarget)) {
-          RuntimeVertex target = edge.getTargetVertex();
-          if(!edge.equals(subTransition) && transitionStatusMap.get(edge).equals(ElementStatus.UNREACHABLE)){
-            q.add(edge);
-            if(!transitionStates.contains(target)) {
-              transitionStates.add(target);
-            }
+      for (RuntimeEdge edge : context.getModel().getOutEdges(subVertexTarget)) {
+        RuntimeVertex target = edge.getTargetVertex();
+        if(!edge.equals(subTransition) && transitionStatusMap.get(edge).equals(ElementStatus.UNREACHABLE)){
+          q.add(edge);
+          if(!transitionStates.contains(target)) {
+            transitionStates.add(target);
           }
         }
       }
+    }
     return transitionStates;
   }
 
@@ -302,12 +312,18 @@ public class AllTransitionState implements Algorithm {
         start = transitionPaths.get(j).getFirst();
         //System.out.println("Loop number: " + i + " - Keytransition - " + keyTransition +  " - NextPath - " + j + " - End - " + end + " - Start - " + start);
         if(end.equals(start)){
-          Path<Element> pathToAdd = new Path<>();
-          pathToAdd = transitionPaths.get(j);
+          Path<Element> pathToAdd = new Path<>(transitionPaths.get(j));
           pathToAdd.removeFirst();
-          finalPath.addAll(pathToAdd);
-          transitionPaths.remove(keyTransition);
+
+          List<Element> copyOfFinalPath = new ArrayList<>(finalPath);
+          List<Element> copyOfPathToAdd = new ArrayList<>(pathToAdd);
+          int contains = Collections.indexOfSubList(copyOfFinalPath, copyOfPathToAdd);
+          if(contains == -1) {
+            finalPath.addAll(pathToAdd);
+            transitionPaths.remove(keyTransition);
+          }
           keyTransition = j;
+
           break;
         }
       }
@@ -335,21 +351,31 @@ public class AllTransitionState implements Algorithm {
       if(equalsIgnore(transitionStates.get(key),states) ) {
 
         List<Element> copyOfalterTransitionPaths = new ArrayList<>(alterTransitionPaths.get(key));
-          int contains = Collections.indexOfSubList(copyOfFinalPath, copyOfalterTransitionPaths);
+        int contains = Collections.indexOfSubList(copyOfFinalPath, copyOfalterTransitionPaths);
 
-        if( contains == -1 ) {
-          if(alterTransitionPaths.get(key).getFirst().equals(start))
+        /*if( contains == -1 ) {
+          if(alterTransitionPaths.get(key).getFirst().equals(start)) {
+            System.out.println(alterTransitionPaths.get(key) + " ADDED TO TESTSET");
             testSet.add(alterTransitionPaths.get(key));
+          }
           else
             optionalTestSet.add(alterTransitionPaths.get(key));
+        }*/
+        //ha meg nem volt benne akkor adjuk hozza az optionaltestset hez majd egyesével megnézem hogy az optionaltestsetben levő pathok önmagukban startbol lefedik az összes csucsot,
+        //akkor hozzaadom a testsethez, majd összefűzöm a maradék csúcsot
+        if(contains == -1){
+          if(alterTransitionPaths.get(key).getFirst().equals(start)) {
+            System.out.println(alterTransitionPaths.get(key) + " ADDED TO TESTSET");
+            testSet.add(alterTransitionPaths.get(key));
+          }
+          optionalTestSet.add(alterTransitionPaths.get(key));
         }
       }
     }
 
     Set<Path<Element>> toAdd = new HashSet<>();
-
     for(Path<Element> path : optionalTestSet){
-
+      int i = 0;
       Path<Element> newPath = new Path<>();
       List<Element> newstates = new ArrayList<>();
       boolean isStart = false;
@@ -357,23 +383,102 @@ public class AllTransitionState implements Algorithm {
 
       while(iter.hasNext()){
         Element item = iter.next();
-        if(item.equals(start)){
+        if(item.equals(start) && i > 0){
           isStart = true;
         }
         if(isStart){
-          if(item instanceof RuntimeVertex){
+          if(item instanceof RuntimeVertex && !newstates.contains(item)){
             newstates.add(item);
           }
           newPath.add(item);
         }
+        i++;
       }
       if(equalsIgnore(newstates,states))
         toAdd.add(newPath);
     }
 
-    testSet.addAll(toAdd);
+    System.out.println(toAdd  + " <- TOADD");
+    if(!optionalTestSet.contains(toAdd))
+      optionalTestSet.addAll(toAdd);
+
+    Path<Element> mergedOptionalPath = new Path<>();
+    Element startVertex;
+    Element endVertex;
+
+    int key = 0;
+    for(int i = 0;i<optionalTestSet.size();i++){
+      if(optionalTestSet.get(i).getFirst().equals(start)){
+        key = i;
+        break;
+      }
+    }
+
+    mergedOptionalPath.addAll(optionalTestSet.get(key));
+    for(int i = 0; i < optionalTestSet.size();i++) {
+      endVertex = optionalTestSet.get(key).getLast();
+      for (int j = 0; j < optionalTestSet.size(); j++) {
+        if (i == j) {
+          continue;
+        }
+        startVertex = optionalTestSet.get(j).getFirst();
+
+        if (endVertex.equals(startVertex)) {
+          Path<Element> pathToAdd = new Path<>(optionalTestSet.get(j));
+          pathToAdd.removeFirst();
+
+          List<Element> copyOfMergedOptionalPath = new ArrayList<>(mergedOptionalPath);
+          List<Element> copyOfPathToAdd = new ArrayList<>(pathToAdd);
+          int contains = Collections.indexOfSubList(copyOfMergedOptionalPath, copyOfPathToAdd);
+          if (contains == -1) {
+            mergedOptionalPath.addAll(pathToAdd);
+          }
+          key = j;
+          break;
+        }
+      }
+    }
+
+    System.out.println("OPTIONAL TESTSET : " + optionalTestSet);
+    testSet.add(mergedOptionalPath);
+
+    addNotAddedTransitionsToTestSet(testSet,(RuntimeVertex) start);
 
     return testSet;
+  }
+
+  private void addNotAddedTransitionsToTestSet(List<Path<Element>> testSet, RuntimeVertex root){
+    List<Element> transitions = new ArrayList<>(allTransitionOfTheModel);
+    for(Path<Element> path : testSet){
+      for(Element element : path){
+        if(transitions.contains(element)){
+          transitions.remove(element);
+        }
+      }
+    }
+
+
+    System.out.println("Transitions that have not been added yet: " + transitions);
+
+    for(Element transition : transitions){
+      Element firstOutEdge = context.getModel().getOutEdges(root).get(0);
+      Path<Element> newPath = new Path<>();
+      boolean foundVertex = false;
+      Path<Element> transitionPath = transitionPaths.get(transition);
+      Element startVertex = transitionPath.getFirst();
+      Path<Element> firstPath = transitionPaths.get(firstOutEdge);
+      Iterator<Element> iterator = firstPath.iterator();
+      while(iterator.hasNext() && !foundVertex){
+        Element element = iterator.next();
+        if(element.equals(startVertex)){
+          foundVertex = true;
+          newPath.addAll(transitionPath);
+        }else {
+          newPath.add(element);
+        }
+      }
+      testSet.add(newPath);
+    }
   }
 
   private void getPathForTransitions(List<Element> allTransitionOfTheModel) {

@@ -325,8 +325,8 @@ public class Edge extends CachedBuilder<Edge, Edge.RuntimeEdge> {
                + ((weight == null) ? 0 : weight.hashCode());
       result = prime * result
                + ((dependency == null) ? 0 : dependency.hashCode());
-      result = prime * result
-        + ((edge == null) ? 0 : edge.hashCode());
+      //result = prime * result
+      //  + ((edge == null) ? 0 : edge.hashCode());
       return result;
     }
 
@@ -340,8 +340,8 @@ public class Edge extends CachedBuilder<Edge, Edge.RuntimeEdge> {
              Objects.equals(targetVertex, that.targetVertex) &&
              Objects.equals(guard, that.guard) &&
              Objects.equals(weight, that.weight) &&
-             Objects.equals(dependency, that.dependency) &&
-             Objects.equals(edge, that.edge);
+             Objects.equals(dependency, that.dependency); //&&
+             //Objects.equals(edge, that.edge);
     }
 
     /**

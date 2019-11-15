@@ -11,11 +11,11 @@ import java.util.List;
 
 import static org.graphwalker.core.common.Objects.isNull;
 
-public class AllTransitionSatePath extends PathGeneratorBase<StopCondition> {
+public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
 
   private Path<Element> path = null;
 
-  public AllTransitionSatePath(StopCondition stopCondition) {
+  public AllTransitionStatePath(StopCondition stopCondition) {
     setStopCondition(stopCondition);
   }
 
@@ -25,6 +25,7 @@ public class AllTransitionSatePath extends PathGeneratorBase<StopCondition> {
     if (isNull(path)) {
       path = getPath(context);
     }
+    System.out.println(path.size());
     context.setCurrentElement(path.removeFirst());
     return context;
   }
@@ -43,6 +44,6 @@ public class AllTransitionSatePath extends PathGeneratorBase<StopCondition> {
 
   @Override
   public boolean hasNextStep() {
-    return !getStopCondition().isFulfilled();
+      return !getStopCondition().isFulfilled();
   }
 }

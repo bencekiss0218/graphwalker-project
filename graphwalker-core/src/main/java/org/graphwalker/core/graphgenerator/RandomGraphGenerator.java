@@ -9,6 +9,8 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.*;
 
 public class RandomGraphGenerator {
@@ -16,6 +18,7 @@ public class RandomGraphGenerator {
   private static final Model model = new Model();
 
   private final Random random = new Random(System.nanoTime());
+  private JSONObject contextObj = new JSONObject();
 
   public Model generateRandomGraph(int numberOfVertices, int minOutEdge, int maxOutEdge) {
     Model model = new Model();
@@ -36,7 +39,7 @@ public class RandomGraphGenerator {
     JSONObject vertexObj = new JSONObject();
     JSONObject edgeObj = new JSONObject();
     JSONObject propertiesObj = new JSONObject();
-    JSONObject contextObj = new JSONObject();
+
 
     try {
       modelObj.put("name", "firstModel");
@@ -139,7 +142,25 @@ public class RandomGraphGenerator {
 
     System.out.println(contextObj);
 
+    writeGeneratedGraph(contextObj);
+
     return model;
+  }
+
+  public JSONObject getContextObj(){
+    return contextObj;
+  }
+
+  public void writeGeneratedGraph(JSONObject contextObj){
+
+    try (FileWriter file = new FileWriter("randomgraph.json")) {
+
+      file.write(contextObj.toString());
+      file.flush();
+
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }
