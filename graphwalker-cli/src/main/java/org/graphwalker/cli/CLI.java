@@ -481,10 +481,12 @@ public class CLI {
   private void runCommandRandomGraph() throws Exception, UnsupportedFileFormat {
 
     int numberOfVertices = Integer.parseInt(randomgraph.input);
-    int outEdges = Integer.parseInt(randomgraph.output);
+    int outEdgesMin = Integer.parseInt(randomgraph.outputmin);
+    int outEdgesMax = Integer.parseInt(randomgraph.outputmax);
+    String file = randomgraph.filename;
     RandomGraphGenerator rgg = new RandomGraphGenerator();
-    Model model = rgg.generateRandomGraph(numberOfVertices,outEdges,outEdges);
-    rgg.writeGeneratedGraph(rgg.getContextObj());
+    Model model = rgg.generateRandomGraph(numberOfVertices,outEdgesMin,outEdgesMax);
+    rgg.writeGeneratedGraph(rgg.getContextObj(),file);
 
   }
 

@@ -62,22 +62,30 @@ public class DepthFirstSearch implements Algorithm {
     List<Element> connectedComponent = new ArrayList<>();
     Deque<Element> stack = new ArrayDeque<>();
     stack.push(root);
+
     while (!stack.isEmpty()) {
       Element element = stack.pop();
+
       if (ElementStatus.UNREACHABLE.equals(elementStatusMap.get(element))) {
         connectedComponent.add(element);
         elementStatusMap.put(element, ElementStatus.REACHABLE);
+
         if (element instanceof RuntimeVertex) {
           RuntimeVertex vertex = (RuntimeVertex) element;
+
           for (RuntimeEdge edge : context.getModel().getOutEdges(vertex)) {
             stack.push(edge);
+
           }
+
         } else if (element instanceof RuntimeEdge) {
           RuntimeEdge edge = (RuntimeEdge) element;
           stack.push(edge.getTargetVertex());
+
         }
       }
     }
+
     return unmodifiableList(connectedComponent);
   }
 

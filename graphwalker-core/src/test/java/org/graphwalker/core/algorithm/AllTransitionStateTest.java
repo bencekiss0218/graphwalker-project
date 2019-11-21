@@ -47,7 +47,7 @@ public class AllTransitionStateTest {
 
 
   private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
-  private static final Model modell = rgg.generateRandomGraph(5,2,2);
+  private static final Model modell = rgg.generateRandomGraph(15,3,3);
   private static final Vertex vert = modell.getVertices().get(0);
 
   private static final Model model = new Model()
@@ -74,7 +74,7 @@ public class AllTransitionStateTest {
   public void testSet() throws Exception {
     AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
 
-    List<Edge> edges = modell.getEdges();
+    List<Edge> edges = model.getEdges();
     for(Edge e : edges){
       System.out.println("---EDGE--- " + e.build() + " SOURCE----- " + e.build().getSourceVertex() + " TARGET ---- " + e.build().getTargetVertex());
     }

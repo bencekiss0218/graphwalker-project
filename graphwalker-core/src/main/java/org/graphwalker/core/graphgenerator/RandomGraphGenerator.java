@@ -142,8 +142,6 @@ public class RandomGraphGenerator {
 
     System.out.println(contextObj);
 
-    writeGeneratedGraph(contextObj);
-
     return model;
   }
 
@@ -151,9 +149,10 @@ public class RandomGraphGenerator {
     return contextObj;
   }
 
-  public void writeGeneratedGraph(JSONObject contextObj){
+  public void writeGeneratedGraph(JSONObject contextObj, String filename){
 
-    try (FileWriter file = new FileWriter("randomgraph.json")) {
+    filename+= ".json";
+    try (FileWriter file = new FileWriter(filename)) {
 
       file.write(contextObj.toString());
       file.flush();

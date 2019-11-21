@@ -25,7 +25,7 @@ public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
     if (isNull(path)) {
       path = getPath(context);
     }
-    System.out.println(path.size());
+
     context.setCurrentElement(path.removeFirst());
     return context;
   }
@@ -44,6 +44,7 @@ public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
 
   @Override
   public boolean hasNextStep() {
-      return !getStopCondition().isFulfilled();
+
+    return !getStopCondition().isFulfilled();
   }
 }
