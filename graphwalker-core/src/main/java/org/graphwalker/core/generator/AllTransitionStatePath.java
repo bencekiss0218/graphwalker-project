@@ -14,6 +14,7 @@ import static org.graphwalker.core.common.Objects.isNull;
 public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
 
   private Path<Element> path = null;
+  private int i = 0;
 
   public AllTransitionStatePath(StopCondition stopCondition) {
     setStopCondition(stopCondition);
@@ -21,6 +22,9 @@ public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
 
   @Override
   public Context getNextStep(){
+
+    System.out.println("Step number is: " + i);
+    i++;
     Context context = super.getNextStep();
     if (isNull(path)) {
       path = getPath(context);
@@ -39,6 +43,7 @@ public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
       finalPath.addAll(path);
     }
 
+    System.out.println("Size of the Test set: " + finalPath.size());
     return finalPath;
   }
 

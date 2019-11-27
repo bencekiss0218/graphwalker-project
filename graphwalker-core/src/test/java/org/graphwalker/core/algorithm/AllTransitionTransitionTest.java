@@ -40,7 +40,7 @@ public class AllTransitionTransitionTest {
   private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s2).setTargetVertex(s1);
 
   private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
-  private static final Model modell = rgg.generateRandomGraph(4,2,2);
+  private static final Model modell = rgg.generateRandomGraph(4,2,2, 0);
   private static final Vertex vertex = modell.getVertices().get(0);
 
   private static final Model model = new Model()

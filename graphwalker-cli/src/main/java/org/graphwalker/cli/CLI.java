@@ -483,9 +483,10 @@ public class CLI {
     int numberOfVertices = Integer.parseInt(randomgraph.input);
     int outEdgesMin = Integer.parseInt(randomgraph.outputmin);
     int outEdgesMax = Integer.parseInt(randomgraph.outputmax);
+    int average = Integer.parseInt(randomgraph.average);
     String file = randomgraph.filename;
     RandomGraphGenerator rgg = new RandomGraphGenerator();
-    Model model = rgg.generateRandomGraph(numberOfVertices,outEdgesMin,outEdgesMax);
+    Model model = rgg.generateRandomGraph(numberOfVertices,outEdgesMin,outEdgesMax,average);
     rgg.writeGeneratedGraph(rgg.getContextObj(),file);
 
   }

@@ -29,24 +29,9 @@ package org.graphwalker.dsl;
 import static org.hamcrest.core.Is.is;
 import static org.hamcrest.core.IsInstanceOf.instanceOf;
 
-import org.graphwalker.core.condition.AlternativeCondition;
-import org.graphwalker.core.condition.CombinedCondition;
-import org.graphwalker.core.condition.DependencyEdgeCoverage;
-import org.graphwalker.core.condition.EdgeCoverage;
-import org.graphwalker.core.condition.Length;
-import org.graphwalker.core.condition.ReachedEdge;
-import org.graphwalker.core.condition.ReachedVertex;
-import org.graphwalker.core.condition.RequirementCoverage;
-import org.graphwalker.core.condition.StopCondition;
-import org.graphwalker.core.condition.TimeDuration;
-import org.graphwalker.core.condition.VertexCoverage;
-import org.graphwalker.core.generator.AStarPath;
-import org.graphwalker.core.generator.CombinedPath;
-import org.graphwalker.core.generator.PathGenerator;
-import org.graphwalker.core.generator.QuickRandomPath;
-import org.graphwalker.core.generator.RandomPath;
-import org.graphwalker.core.generator.ShortestAllPaths;
-import org.graphwalker.core.generator.WeightedRandomPath;
+import org.graphwalker.core.algorithm.AllTransitionState;
+import org.graphwalker.core.condition.*;
+import org.graphwalker.core.generator.*;
 import org.graphwalker.dsl.antlr.DslException;
 import org.graphwalker.dsl.antlr.generator.GeneratorFactory;
 import org.junit.Assert;
@@ -310,4 +295,48 @@ public class GeneratorFactoryTest {
     Assert.assertThat(generator.getStopCondition(), instanceOf(AlternativeCondition.class));
     Assert.assertThat(((AlternativeCondition) generator.getStopCondition()).getStopConditions().size(), is(3));
   }
+
+  @Test
+  public void alltransitionstate_alltransitionstatefull() {
+    PathGenerator generator = GeneratorFactory.parse("alltransitionstate(alltransitionstatefull)");
+    Assert.assertThat(generator, instanceOf(AllTransitionStatePath.class));
+    Assert.assertThat(generator.getStopCondition(), instanceOf(AllTransitionStateFull.class));
+  }
+
+  @Test
+  public void all_transition_state_alltransitionstatefull() {
+    PathGenerator generator = GeneratorFactory.parse("all_transition_state(alltransitionstatefull)");
+    Assert.assertThat(generator, instanceOf(AllTransitionStatePath.class));
+    Assert.assertThat(generator.getStopCondition(), instanceOf(AllTransitionStateFull.class));
+  }
+
+  @Test
+  public void all_transition_state_all_transition_state_full() {
+    PathGenerator generator = GeneratorFactory.parse("all_transition_state(all_transition_state_full)");
+    Assert.assertThat(generator, instanceOf(AllTransitionStatePath.class));
+    Assert.assertThat(generator.getStopCondition(), instanceOf(AllTransitionStateFull.class));
+  }
+
+  @Test
+  public void alltransitionstateall_transition_state_full() {
+    PathGenerator generator = GeneratorFactory.parse("alltransitionstate(all_transition_state_full)");
+    Assert.assertThat(generator, instanceOf(AllTransitionStatePath.class));
+    Assert.assertThat(generator.getStopCondition(), instanceOf(AllTransitionStateFull.class));
+  }
+
+  @Test
+  public void alltransitionstate_alltransitionstatepairs() {
+    PathGenerator generator = GeneratorFactory.parse("alltransitionstate(alltransitionstatepairs)");
+    Assert.assertThat(generator, instanceOf(AllTransitionStatePath.class));
+    Assert.assertThat(generator.getStopCondition(), instanceOf(AllTransitionStatePairs.class));
+  }
+
+  @Test
+  public void alltransitionstateall_transition_state_pairs() {
+    PathGenerator generator = GeneratorFactory.parse("alltransitionstate(all_transition_state_pairs)");
+    Assert.assertThat(generator, instanceOf(AllTransitionStatePath.class));
+    Assert.assertThat(generator.getStopCondition(), instanceOf(AllTransitionStatePairs.class));
+  }
+
+
 }

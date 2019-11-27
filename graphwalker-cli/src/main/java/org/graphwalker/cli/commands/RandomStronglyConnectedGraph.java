@@ -44,11 +44,12 @@ public class RandomStronglyConnectedGraph {
     description = "Which is the number of the outedges of a vertex")
   public String outputmax = "";
 
+  @Parameter(names = {"--average", "-avg"}, arity = 1,
+    description = "Which is the average of the outedges for the vertices in the model")
+  public String average = "0";
+
   @Parameter(names = {"--filename", "-f"}, required = true, arity = 1,
     description = "Which is the name of the further created MODEL JSON file")
   public String filename = "";
 
-  @Parameter(names = {"--blocked",
-    "-b"}, arity = 1, description = "This option enables or disables the BLOCKED feature. When \"-b true\" GraphWalker will filter out elements in models with the keyword BLOCKED. When \"-b false\" GraphWalker will not filter out any elements in models with the keyword BLOCKED.")
-  public boolean blocked = true;
 }

@@ -76,7 +76,11 @@ public class GeneratorLoader extends GeneratorParserBaseListener {
       stopConditions.add(new RequirementCoverage(Integer.parseInt(ctx.getChild(2).getText())));
     } else if ("length".equals(conditionName)) {
     	stopConditions.add(new Length(Integer.parseInt(ctx.getChild(2).getText())));
-    }
+    } else if ("all_transition_state_full".equals(conditionName) || "alltransitionstatefull".equals(conditionName)){
+      stopConditions.add(new AllTransitionStateFull());
+    } else if ("all_transition_state_pairs".equals(conditionName) || "alltransitionstatepairs".equals(conditionName)){
+    stopConditions.add(new AllTransitionStatePairs());
+  }
   }
 
   @Override

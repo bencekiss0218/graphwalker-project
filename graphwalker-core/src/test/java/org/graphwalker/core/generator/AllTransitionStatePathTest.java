@@ -1,9 +1,7 @@
 package org.graphwalker.core.generator;
 
-import org.graphwalker.core.condition.AllTransitionStateCondition;
-import org.graphwalker.core.condition.EdgeCoverage;
-import org.graphwalker.core.condition.Length;
-import org.graphwalker.core.condition.Never;
+import org.graphwalker.core.condition.AllTransitionStateFull;
+import org.graphwalker.core.condition.AllTransitionStatePairs;
 import org.graphwalker.core.machine.Context;
 import org.graphwalker.core.machine.TestExecutionContext;
 import org.graphwalker.core.model.*;
@@ -45,11 +43,11 @@ public class AllTransitionStatePathTest {
 
 
     Model model = new Model().addEdge(e0).addEdge(e1).addEdge(e2).addEdge(e3).addEdge(e4).addEdge(e5).addEdge(e6).addEdge(e7);
-    Context context = new TestExecutionContext(model, new AllTransitionStatePath(new AllTransitionStateCondition()));
+    Context context = new TestExecutionContext(model, new AllTransitionStatePath(new AllTransitionStateFull()));
     context.setProfiler(new SimpleProfiler());
     Deque<Builder<? extends Element>> expectedElements = new ArrayDeque<>(
       Arrays.asList(v0, e0, v1, e1, v2, e2, v3, e3, v0, e4, v1, e5, v0, e0, v1, e1, v2, e6, v1, e1, v2, e2, v3, e7, v1, e1, v2, e2, v3, e3, v0,
-        v0, e4, v1, e1, v2, e2, v3,v0, e0, v1, e1, v2, e2, v3,v0, e0, v1, e1, v2, e2, v3, e3, v0,v0, e0, v1, e1, v2, e2, v3, e3, v0, e0, v1,v0, e0, v1, e1, v2, e2, v3, e3, v0, e0, v1, e1, v2)
+        v0, e4, v1, e1, v2, e2, v3, v0, e0, v1, e1, v2, e2, v3)
     );
 
     context.setCurrentElement(context.getModel().getElementById("start"));

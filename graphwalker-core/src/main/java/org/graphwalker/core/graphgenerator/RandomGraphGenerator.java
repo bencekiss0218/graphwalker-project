@@ -20,7 +20,7 @@ public class RandomGraphGenerator {
   private final Random random = new Random(System.nanoTime());
   private JSONObject contextObj = new JSONObject();
 
-  public Model generateRandomGraph(int numberOfVertices, int minOutEdge, int maxOutEdge) {
+  public Model generateRandomGraph(int numberOfVertices, int minOutEdge, int maxOutEdge, int average) {
     Model model = new Model();
     List<Vertex> vertices = new ArrayList<>();
     List<Edge> edges = new ArrayList<>();
@@ -30,7 +30,6 @@ public class RandomGraphGenerator {
     String edgeName;
     Edge edge;
     int edgeIndex;
-
 
     JSONArray modelsArray = new JSONArray();
     JSONArray verticesArray = new JSONArray();
@@ -43,8 +42,8 @@ public class RandomGraphGenerator {
 
     try {
       modelObj.put("name", "firstModel");
-      modelObj.put("id", 1323);
-      modelObj.put("generator", "random(vertex_coverage(100))");
+      modelObj.put("id", random.nextInt( 10000) + 1);
+      modelObj.put("generator", "alltransitionstate(alltransitionstatecondition)");
       //modelObj.put("actions", "");
     }catch (Exception e){
       System.out.println(e);
@@ -78,18 +77,27 @@ public class RandomGraphGenerator {
 
     edgeIndex = edges.size();
 
+    int diff = 0;
+    double sum = edgeIndex;
+
+    Map<Vertex,Integer> outPerVertex = new HashMap<>();
+
     for(Vertex v : vertices){
-      int outedges = random.nextInt((maxOutEdge - minOutEdge) + 1) + minOutEdge;
-      for(int i = 0; i < outedges-1; i++){
+      int randomOut = random.nextInt((maxOutEdge - minOutEdge) + 1) + minOutEdge + diff;
+      int outedges = Math.max(Math.min(randomOut,maxOutEdge),minOutEdge);
+      if(average != 0)
+        diff += average - outedges;
+      for(int i = 0; i < outedges - 1; i++){
         edgeId = "e_" + edgeIndex;
         edgeName = "e" + edgeIndex;
-        Vertex source = v;
         edgeIndex++;
         int targetVertexId = random.nextInt((vertices.size() - 1));
         Vertex target = vertices.get(targetVertexId);
-        edge = new Edge().setId(edgeId).setName(edgeName).setSourceVertex(source).setTargetVertex(target);
+        edge = new Edge().setId(edgeId).setName(edgeName).setSourceVertex(v).setTargetVertex(target);
         model.addEdge(edge);
       }
+      outPerVertex.put(v,outedges);
+      sum += (outedges-1);
     }
 
 
@@ -141,6 +149,7 @@ public class RandomGraphGenerator {
     }
 
     System.out.println(contextObj);
+    System.out.println("AVERAGE OUTEDGES " + sum / vertices.size() + " vertices size : " + vertices.size());
 
     return model;
   }

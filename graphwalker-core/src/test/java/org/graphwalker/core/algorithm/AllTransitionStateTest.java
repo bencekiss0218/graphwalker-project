@@ -44,10 +44,37 @@ public class AllTransitionStateTest {
   private static final Edge l2 = new Edge().setName("l2").setSourceVertex(k2).setTargetVertex(k1);
   private static final Edge l3 = new Edge().setName("l3").setSourceVertex(k2).setTargetVertex(k3);
 
+  //new
+  private static final Vertex b0 = new Vertex().setName("b0");
+  private static final Vertex b1 = new Vertex().setName("b1");
+  private static final Vertex b2 = new Vertex().setName("b2");
+  private static final Vertex b3 = new Vertex().setName("b3");
+  private static final Vertex b4 = new Vertex().setName("b4");
+
+  private static final Edge f0 = new Edge().setName("f0").setSourceVertex(b0).setTargetVertex(b1);
+  private static final Edge f1 = new Edge().setName("f1").setSourceVertex(b1).setTargetVertex(b2);
+  private static final Edge f2 = new Edge().setName("f2").setSourceVertex(b2).setTargetVertex(b3);
+  private static final Edge f3 = new Edge().setName("f3").setSourceVertex(b3).setTargetVertex(b4);
+  private static final Edge f4 = new Edge().setName("f4").setSourceVertex(b4).setTargetVertex(b0);
+  private static final Edge f5 = new Edge().setName("f5").setSourceVertex(b0).setTargetVertex(b0);
+  private static final Edge f6 = new Edge().setName("f6").setSourceVertex(b0).setTargetVertex(b3);
+  private static final Edge f7 = new Edge().setName("f7").setSourceVertex(b0).setTargetVertex(b2);
+  private static final Edge f8 = new Edge().setName("f8").setSourceVertex(b0).setTargetVertex(b2);
+  private static final Edge f9 = new Edge().setName("f9").setSourceVertex(b1).setTargetVertex(b1);
+  private static final Edge f10 = new Edge().setName("f10").setSourceVertex(b2).setTargetVertex(b2);
+  private static final Edge f11 = new Edge().setName("f11").setSourceVertex(b2).setTargetVertex(b2);
+  private static final Edge f12 = new Edge().setName("f12").setSourceVertex(b2).setTargetVertex(b1);
+  private static final Edge f13 = new Edge().setName("f13").setSourceVertex(b2).setTargetVertex(b2);
+  private static final Edge f14 = new Edge().setName("f14").setSourceVertex(b2).setTargetVertex(b2);
+  private static final Edge f15 = new Edge().setName("f15").setSourceVertex(b2).setTargetVertex(b3);
+  private static final Edge f16 = new Edge().setName("f16").setSourceVertex(b4).setTargetVertex(b1);
+  private static final Edge f17= new Edge().setName("f17").setSourceVertex(b4).setTargetVertex(b0);
+  private static final Edge f18= new Edge().setName("f18").setSourceVertex(b4).setTargetVertex(b0);
+
 
 
   private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
-  private static final Model modell = rgg.generateRandomGraph(15,3,3);
+  private static final Model modell = rgg.generateRandomGraph(10,2,6, 0);
   private static final Vertex vert = modell.getVertices().get(0);
 
   private static final Model model = new Model()
@@ -67,7 +94,27 @@ public class AllTransitionStateTest {
     .addEdge(t3)
     .addEdge(t4)
     .addEdge(t5)
-    .addEdge(t6);
+    .addEdge(t6)
+
+    .addEdge(f0)
+    .addEdge(f1)
+    .addEdge(f2)
+    .addEdge(f3)
+    .addEdge(f4)
+    .addEdge(f5)
+    .addEdge(f6)
+    .addEdge(f7)
+    .addEdge(f8)
+    .addEdge(f9)
+    .addEdge(f10)
+    .addEdge(f11)
+    .addEdge(f12)
+    .addEdge(f13)
+    .addEdge(f14)
+    .addEdge(f15)
+    .addEdge(f16)
+    .addEdge(f17)
+    .addEdge(f18);
 
 
   @Test
@@ -80,7 +127,137 @@ public class AllTransitionStateTest {
     }
 
     System.out.println(allTransitionState.returnTestSet(v0.build()));
+  }
 
+  @Test
+  public void testReachableStates() throws Exception{
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    allTransitionState.fillStatesAndTransitions(v0.build());
+    List<Element> states = allTransitionState.getReachableStates(e0.build());
+    List<Element> expectedStates = new ArrayList<Element>(){
+      {
+        add(v0.build());
+        add(v1.build());
+        add(v2.build());
+        add(v3.build());
+      }
+    };
+    assertThat(states, is(expectedStates));
+  }
+
+  @Test
+  public void testTransitionNeighbours() throws Exception{
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    allTransitionState.fillStatesAndTransitions(v0.build());
+    allTransitionState.allReachableStates();
+    allTransitionState.pathsForTransitions();
+    List<Element> expectedNeighbours = new ArrayList<Element>(){
+      {
+        add(e4.build());
+      }
+    };
+    List<Element> neighbours = allTransitionState.getNeighbours().get(e0.build());
+    assertThat(neighbours, is(expectedNeighbours));
+  }
+
+  @Test
+  public void testPathForTransition() throws Exception{
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    allTransitionState.fillStatesAndTransitions(v0.build());
+    allTransitionState.allReachableStates();
+    allTransitionState.pathsForTransitions();
+    List<Element> expectedPath = new ArrayList<Element>(){
+      {
+        add(v0.build());
+        add(e0.build());
+        add(v1.build());
+        add(e1.build());
+        add(v2.build());
+        add(e2.build());
+        add(v3.build());
+      }
+    };
+
+    List<Element> path = new ArrayList<>(allTransitionState.getTransitionPaths().get(e0.build()));
+    assertThat(path, is(expectedPath));
+  }
+
+  @Test
+  public void testOtherPathForTransition() throws Exception{
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    allTransitionState.fillStatesAndTransitions(v0.build());
+    allTransitionState.allReachableStates();
+    allTransitionState.pathsForTransitions();
+    allTransitionState.otherPathForTransitions();
+    List<Element> expectedOtherPath = new ArrayList<Element>(){
+      {
+        add(v0.build());
+        add(e4.build());
+        add(v1.build());
+        add(e1.build());
+        add(v2.build());
+        add(e2.build());
+        add(v3.build());
+      }
+    };
+    List<Element> otherPath = new ArrayList<>(allTransitionState.getOtherTransitionPaths().get(e0.build()));
+    assertThat(otherPath, is(expectedOtherPath));
+  }
+
+  @Test
+  public void testFinalPath() throws Exception{
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    allTransitionState.fillStatesAndTransitions(v0.build());
+    allTransitionState.allReachableStates();
+    allTransitionState.lookForPaths(v0.build());
+    List<Element> expectedFinalPath = new ArrayList<Element>(){
+      {
+        add(v0.build());
+        add(e0.build());
+        add(v1.build());
+        add(e1.build());
+        add(v2.build());
+        add(e2.build());
+        add(v3.build());
+        add(e3.build());
+        add(v0.build());
+        add(e4.build());
+        add(v1.build());
+        add(e5.build());
+        add(v0.build());
+        add(e0.build());
+        add(v1.build());
+        add(e1.build());
+        add(v2.build());
+        add(e6.build());
+        add(v1.build());
+        add(e1.build());
+        add(v2.build());
+        add(e2.build());
+        add(v3.build());
+        add(e7.build());
+        add(v1.build());
+        add(e1.build());
+        add(v2.build());
+        add(e2.build());
+        add(v3.build());
+        add(e3.build());
+        add(v0.build());
+      }
+    };
+    List<Element> finalPath = new ArrayList<>(allTransitionState.getFinalPath());
+    assertThat(finalPath, is(expectedFinalPath));
+  }
+
+  @Test
+  public void testTestSet()throws Exception{
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    allTransitionState.fillStatesAndTransitions(v0.build());
+    allTransitionState.allReachableStates();
+    allTransitionState.lookForPaths(v0.build());
+    int expectedTestSetSize = 3;
+    List<Path<Element>> testSet = allTransitionState.getTestSet();
+    assertThat(testSet.size(), is(expectedTestSetSize));
   }
 
 

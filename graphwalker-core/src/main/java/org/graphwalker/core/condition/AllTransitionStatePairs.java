@@ -6,16 +6,14 @@ import org.graphwalker.core.model.Path;
 
 import java.util.List;
 
-public class AllTransitionStateCondition extends StopConditionBase{
+public class AllTransitionStatePairs extends StopConditionBase{
 
-  private long length;
-
-  public AllTransitionStateCondition() {
+  public AllTransitionStatePairs() {
     super("");
   }
 
   public long getLength() {
-    return getContext().getAlgorithm(AllTransitionState.class).getTestSet().size();
+    return getContext().getAlgorithm(AllTransitionState.class).getTestSet().get(0).size();
   }
 
   @Override
@@ -25,11 +23,17 @@ public class AllTransitionStateCondition extends StopConditionBase{
 
   @Override
   public double getFulfilment() {
-    length = 0;
+
+    long length = 0;
     List<Path<Element>> testSet = getContext().getAlgorithm(AllTransitionState.class).getTestSet();
-    for(Path<Element> p : testSet){
-      length += p.size();
+    if(!testSet.isEmpty()){
+      length = testSet.get(0).size();
     }
+
+    if(length == 0){
+      length = 2;
+    }
+
 
     return (double) getContext().getProfiler().getTotalVisitCount() / length;
   }
