@@ -46,8 +46,14 @@ import java.util.List;
  */
 public class AStarPath extends PathGeneratorBase<ReachedStopCondition> {
 
+  private int count = 0;
+  double start;
+
   public AStarPath(ReachedStopCondition stopCondition) {
+
+    start = System.nanoTime();
     setStopCondition(stopCondition);
+
   }
 
   @Override
@@ -67,12 +73,20 @@ public class AStarPath extends PathGeneratorBase<ReachedStopCondition> {
         target = element;
       }
     }
+    count++;
     AStar astar = context.getAlgorithm(AStar.class);
     return context.setCurrentElement(astar.getNextElement(context.getCurrentElement(), target));
   }
 
   @Override
   public boolean hasNextStep() {
+
+    if(getStopCondition().isFulfilled()){
+      double end = System.nanoTime() - start;
+      System.out.println("Estimated time is: " + end / 1000000000);
+      System.out.println("Current step count = " + count);
+    }
+
     return !getStopCondition().isFulfilled();
   }
 }

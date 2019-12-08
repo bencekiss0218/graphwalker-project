@@ -44,7 +44,6 @@ public class BreadthFirstSearch implements Algorithm {
     LinkedList<Element> q = new LinkedList<>();
     q.add(root);
     connectedComponent.add(root);
-    System.out.println(" ROOT: " + root);
     states.add(root);
     while (!q.isEmpty()) {
 

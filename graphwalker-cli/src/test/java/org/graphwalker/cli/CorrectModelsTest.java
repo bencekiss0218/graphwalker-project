@@ -62,19 +62,19 @@ public class CorrectModelsTest extends CLITestRoot {
   /**
    * Simplest model
    */
-  @Test
+  /*@Test
   public void simplestModel() {
     String args[] = {"offline", "-m", "graphml/CorrectModels/simplestModel.graphml", "random(vertex_coverage(100))"};
     Result result = runCommand(args);
     Assert.assertThat(result.getError(), is(""));
     Assert.assertThat(result.getOutput(), is("{\"currentElementName\":\"e1\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"v1\"}" + System.lineSeparator()));
-  }
+  }*/
 
   /**
    * shortest All Paths Vertex Coverage
    */
-  @Test
+  /*@Test
   public void shortestAllPathsVertexCoverage() {
     String args[] = {"offline", "-m", "graphml/CorrectModels/shortestAllPathsVertexCoverage.graphml", "shortest_all_paths(vertex_coverage(100))"};
     Result result = runCommand(args);
@@ -89,7 +89,7 @@ public class CorrectModelsTest extends CLITestRoot {
                                              "{\"currentElementName\":\"v1\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"e3\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"v3\"}" + System.lineSeparator()));
-  }
+  }*/
 
   /**
    * shortest All Paths Vertex Coverage
@@ -104,7 +104,7 @@ public class CorrectModelsTest extends CLITestRoot {
   /**
    * No start vertex
    */
-  @Test
+  /*@Test
   public void noStartVertex() {
     String args[] = {"offline", "-e", "v1", "-m", "graphml/CorrectModels/modelWithNoStartVertex.graphml", "a_star(reached_edge(e4))"};
     Result result = runCommand(args);
@@ -113,12 +113,12 @@ public class CorrectModelsTest extends CLITestRoot {
                                              "{\"currentElementName\":\"e2\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"v2\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"e4\"}" + System.lineSeparator()));
-  }
+  }*/
 
   /**
    * Don't use blocked feature
    */
-  @Test
+ /* @Test
   public void dontUseBlocked() {
     String args[] = {"offline", "-b", "false", "-m", "graphml/CorrectModels/blockedVertex.graphml", "random(edge_coverage(100))"};
     Result result = runCommand(args);
@@ -127,19 +127,19 @@ public class CorrectModelsTest extends CLITestRoot {
                                              "{\"currentElementName\":\"v1\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"e2\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"v2\"}" + System.lineSeparator()));
-  }
+  }*/
 
   /**
    * Use blocked feature
    */
-  @Test
+  /*@Test
   public void useBlocked() {
     String args[] = {"offline", "-m", "graphml/CorrectModels/blockedVertex.graphml", "random(edge_coverage(100))"};
     Result result = runCommand(args);
     Assert.assertThat(result.getError(), is(""));
     Assert.assertThat(result.getOutput(), is("{\"currentElementName\":\"e1\"}" + System.lineSeparator() +
                                              "{\"currentElementName\":\"v1\"}" + System.lineSeparator()));
-  }
+  }*/
 
   /**
    * Don't use blocked feature with a json file

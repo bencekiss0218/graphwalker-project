@@ -49,9 +49,14 @@ public class RandomPath extends PathGeneratorBase<StopCondition> {
   private static final Logger LOG = LoggerFactory.getLogger(RandomPath.class);
 
   private final Random random = new Random(System.nanoTime());
+  private int count = 0;
+  double start;
 
   public RandomPath(StopCondition stopCondition) {
+
+    start = System.nanoTime();
     setStopCondition(stopCondition);
+
   }
 
   @Override
@@ -64,12 +69,20 @@ public class RandomPath extends PathGeneratorBase<StopCondition> {
       LOG.error("context.getModel().getElements(): " + context.getModel().getElements());
       throw new NoPathFoundException(context.getCurrentElement());
     }
+    count++;
+
     context.setCurrentElement(elements.get(random.nextInt(elements.size())));
     return context;
   }
 
   @Override
   public boolean hasNextStep() {
+
+    if(getStopCondition().isFulfilled()){
+      double end = System.nanoTime() - start;
+      System.out.println("Estimated time is: " + end / 1000000000);
+      System.out.println("Current step count = " + count);
+    }
     return !getStopCondition().isFulfilled();
   }
 

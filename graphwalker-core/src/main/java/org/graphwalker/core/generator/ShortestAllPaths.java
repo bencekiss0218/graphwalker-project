@@ -41,7 +41,11 @@ public class ShortestAllPaths extends PathGeneratorBase<StopCondition> {
 
   private Path<Element> path = null;
 
+  private int count = 0;
+  double start;
+
   public ShortestAllPaths(StopCondition stopCondition) {
+    start = System.nanoTime();
     setStopCondition(stopCondition);
   }
 
@@ -52,6 +56,7 @@ public class ShortestAllPaths extends PathGeneratorBase<StopCondition> {
       path = getPath(context);
     }
     context.setCurrentElement(path.removeFirst());
+    count++;
     return context;
   }
 
@@ -61,6 +66,11 @@ public class ShortestAllPaths extends PathGeneratorBase<StopCondition> {
 
   @Override
   public boolean hasNextStep() {
+    if(getStopCondition().isFulfilled()){
+      double end = System.nanoTime() - start;
+      System.out.println("Estimated time is: " + end / 1000000000);
+      System.out.println("Current step count = " + count);
+    }
     return !getStopCondition().isFulfilled();
   }
 }

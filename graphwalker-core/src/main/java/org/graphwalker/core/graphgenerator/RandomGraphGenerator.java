@@ -39,18 +39,41 @@ public class RandomGraphGenerator {
     JSONObject edgeObj = new JSONObject();
     JSONObject propertiesObj = new JSONObject();
 
+    try {
+      if (minOutEdge > maxOutEdge) {
+        throw new Exception("Minimum outedges can not be higher than maximum outedges.");
+      }
+    }catch (Exception e){
+      System.out.println(e.toString());
+    }
+
+    try {
+      if (numberOfVertices < 2) {
+        throw new Exception("At least two vertices necessary");
+      }
+    }catch (Exception e){
+      System.out.println(e.toString());
+    }
+
+    try {
+      if (minOutEdge <= 0 || maxOutEdge <=0) {
+        throw new Exception("can not  be negative or zero");
+      }
+    }catch (Exception e){
+      System.out.println(e.toString());
+    }
 
     try {
       modelObj.put("name", "firstModel");
       modelObj.put("id", random.nextInt( 10000) + 1);
-      modelObj.put("generator", "alltransitionstate(alltransitionstatecondition)");
+      modelObj.put("generator", "alltransitionstate(alltransitionstatefull)");
       //modelObj.put("actions", "");
     }catch (Exception e){
       System.out.println(e);
     }
 
+    //generate the vertices and one edge to the other
     for(int i = 0; i < numberOfVertices + 1; i++){
-
 
       if(i<numberOfVertices){
         vertexId = "v_" + i;
@@ -82,6 +105,7 @@ public class RandomGraphGenerator {
 
     Map<Vertex,Integer> outPerVertex = new HashMap<>();
 
+    //generate random outedges from the vertices
     for(Vertex v : vertices){
       int randomOut = random.nextInt((maxOutEdge - minOutEdge) + 1) + minOutEdge + diff;
       int outedges = Math.max(Math.min(randomOut,maxOutEdge),minOutEdge);
@@ -101,6 +125,7 @@ public class RandomGraphGenerator {
     }
 
 
+    //making the modell in JSON
     try {
       int xCord = 300;
       int yCord = 250;
@@ -150,6 +175,7 @@ public class RandomGraphGenerator {
 
     System.out.println(contextObj);
     System.out.println("AVERAGE OUTEDGES " + sum / vertices.size() + " vertices size : " + vertices.size());
+    System.out.println("All EDGES: " + sum);
 
     return model;
   }

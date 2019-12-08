@@ -14,17 +14,25 @@ import static org.graphwalker.core.common.Objects.isNull;
 public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
 
   private Path<Element> path = null;
-  private int i = 0;
+  //private int i = 0;
+
+  //for cumulation
+  double start;
+  int sumTestSet;
+  int sumPath;
 
   public AllTransitionStatePath(StopCondition stopCondition) {
+
+    start = System.nanoTime();
     setStopCondition(stopCondition);
+
   }
 
   @Override
   public Context getNextStep(){
 
-    System.out.println("Step number is: " + i);
-    i++;
+    //System.out.println("Step number is: " + i);
+    //i++;
     Context context = super.getNextStep();
     if (isNull(path)) {
       path = getPath(context);
@@ -39,16 +47,27 @@ public class AllTransitionStatePath extends PathGeneratorBase<StopCondition> {
     Path<Element> finalPath = new Path<>();
     paths = context.getAlgorithm(AllTransitionState.class).returnTestSet(context.getCurrentElement());
 
+    sumPath = paths.get(0).size();
+
     for(Path<Element> path : paths){
       finalPath.addAll(path);
     }
 
-    System.out.println("Size of the Test set: " + finalPath.size());
+    sumTestSet = finalPath.size();
+
     return finalPath;
   }
 
   @Override
   public boolean hasNextStep() {
+
+    if(getStopCondition().isFulfilled()){
+      double end = System.nanoTime() - start;
+      System.out.println("Size of the AllTransitionState criterium path: " + sumPath);
+      System.out.println("Size of the Test set: " + sumTestSet);
+      System.out.println("Estimated time is: " + end / 1000000000);
+      return false;
+    }
 
     return !getStopCondition().isFulfilled();
   }

@@ -8,6 +8,8 @@ import java.util.List;
 
 public class AllTransitionStateFull extends StopConditionBase{
 
+  boolean stop = false;
+
   public AllTransitionStateFull() {
     super("");
   }
@@ -28,12 +30,15 @@ public class AllTransitionStateFull extends StopConditionBase{
 
     List<Path<Element>> testSet = getContext().getAlgorithm(AllTransitionState.class).getTestSet();
     for(Path<Element> p : testSet){
+      stop = true;
       length += p.size();
     }
 
-    if(length == 0){
+    if(length == 0 && !stop){
       length = 2;
     }
+
+    //System.out.println(length);
 
     return (double) getContext().getProfiler().getTotalVisitCount() / length;
   }

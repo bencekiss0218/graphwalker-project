@@ -28,6 +28,7 @@ public class AllTransitionStatePathTest {
    // Edge t4 = new Edge().setName("t4").setSourceVertex(s2).setTargetVertex(s1);
    // Edge t5 = new Edge().setName("t5").setSourceVertex(s2).setTargetVertex(s2);
 
+
     Vertex v0 = new Vertex().setName("v0").setId("start");
     Vertex v1 = new Vertex().setName("v1");
     Vertex v2 = new Vertex().setName("v2");
@@ -47,11 +48,14 @@ public class AllTransitionStatePathTest {
     context.setProfiler(new SimpleProfiler());
     Deque<Builder<? extends Element>> expectedElements = new ArrayDeque<>(
       Arrays.asList(v0, e0, v1, e1, v2, e2, v3, e3, v0, e4, v1, e5, v0, e0, v1, e1, v2, e6, v1, e1, v2, e2, v3, e7, v1, e1, v2, e2, v3, e3, v0,
-        v0, e4, v1, e1, v2, e2, v3, v0, e0, v1, e1, v2, e2, v3)
+        v0, e4, v1, e1, v2, e2, v3, e3, v0, v0, e0, v1, e1, v2, e2, v3, e3, v0)
     );
+
 
     context.setCurrentElement(context.getModel().getElementById("start"));
     execute(context, expectedElements);
+
+
     assertTrue(expectedElements.isEmpty());
   }
 

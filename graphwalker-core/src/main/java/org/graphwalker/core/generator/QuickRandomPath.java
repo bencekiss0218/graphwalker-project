@@ -61,7 +61,11 @@ public class QuickRandomPath extends PathGeneratorBase<StopCondition> {
   private final List<Element> elements = new ArrayList<>();
   private Element target = null;
 
+  private int count = 0;
+  double start;
+
   public QuickRandomPath(StopCondition stopCondition) {
+    start = System.nanoTime();
     setStopCondition(stopCondition);
   }
 
@@ -82,6 +86,7 @@ public class QuickRandomPath extends PathGeneratorBase<StopCondition> {
         LOG.debug("New selected target is: {} - {}", target.getId(), target.getName());
       }
     }
+    count++;
     Element nextElement = context.getAlgorithm(AStar.class).getNextElement(context.getCurrentElement(), target);
     elements.remove(nextElement);
     return context.setCurrentElement(nextElement);
@@ -97,6 +102,13 @@ public class QuickRandomPath extends PathGeneratorBase<StopCondition> {
 
   @Override
   public boolean hasNextStep() {
+
+
+    if(getStopCondition().isFulfilled()){
+      double end = System.nanoTime() - start;
+      System.out.println("Estimated time is: " + end / 1000000000);
+      System.out.println("Current step count = " + count);
+    }
     return !getStopCondition().isFulfilled();
   }
 }
