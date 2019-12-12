@@ -26,8 +26,8 @@ public class AllTransitionStateTest {
   private static final Edge t5 = new Edge().setName("t5").setSourceVertex(s2).setTargetVertex(s2);
   private static final Edge t6 = new Edge().setName("t6").setSourceVertex(s1).setTargetVertex(s3);
   private static final Edge t7 = new Edge().setName("t7").setSourceVertex(s3).setTargetVertex(s2);
-  private static final Edge t8 = new Edge().setName("t8").setSourceVertex(s1).setTargetVertex(s4);
-  private static final Edge t9 = new Edge().setName("t9").setSourceVertex(s4).setTargetVertex(s1);
+  private static final Edge t8 = new Edge().setName("t8").setSourceVertex(s3).setTargetVertex(s4);
+  private static final Edge t9 = new Edge().setName("t9").setSourceVertex(s4).setTargetVertex(s3);
   private static final Edge t10 = new Edge().setName("t10").setSourceVertex(s4).setTargetVertex(s5);
   private static final Edge t11 = new Edge().setName("t11").setSourceVertex(s5).setTargetVertex(s4);
   //private static final Edge t8 = new Edge().setName("t8").setSourceVertex(s3).setTargetVertex(s3);
@@ -96,7 +96,7 @@ public class AllTransitionStateTest {
 
 
   private static final RandomGraphGenerator rgg = new RandomGraphGenerator();
-  private static final Model modell = rgg.generateRandomGraph(12,2,6, 0);
+  private static final Model modell = rgg.generateRandomGraph(20,2,12, 0);
   private static final Vertex vert = modell.getVertices().get(0);
 
   private static final Model model = new Model()
@@ -155,14 +155,14 @@ public class AllTransitionStateTest {
 
   @Test
   public void testSet() throws Exception {
-    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(model.build()));
+    AllTransitionState allTransitionState = new AllTransitionState(new TestExecutionContext().setModel(modell.build()));
 
     List<Edge> edges = modell.getEdges();
     for(Edge e : edges){
       System.out.println("---EDGE--- " + e.build() + " SOURCE----- " + e.build().getSourceVertex() + " TARGET ---- " + e.build().getTargetVertex());
     }
 
-    System.out.println(allTransitionState.returnTestSet(s1.build()));
+    System.out.println(allTransitionState.returnTestSet(vert.build()));
   }
 
   @Test

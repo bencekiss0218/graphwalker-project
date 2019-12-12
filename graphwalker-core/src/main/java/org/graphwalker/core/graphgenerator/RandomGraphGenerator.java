@@ -45,6 +45,7 @@ public class RandomGraphGenerator {
       }
     }catch (Exception e){
       System.out.println(e.toString());
+      return null;
     }
 
     try {
@@ -53,6 +54,7 @@ public class RandomGraphGenerator {
       }
     }catch (Exception e){
       System.out.println(e.toString());
+      return null;
     }
 
     try {
@@ -61,6 +63,7 @@ public class RandomGraphGenerator {
       }
     }catch (Exception e){
       System.out.println(e.toString());
+      return null;
     }
 
     try {

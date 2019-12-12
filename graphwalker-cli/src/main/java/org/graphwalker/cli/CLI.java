@@ -478,6 +478,7 @@ public class CLI {
     }
   }
 
+  //command for generating the randomgraph
   private void runCommandRandomGraph() throws Exception, UnsupportedFileFormat {
 
     int numberOfVertices = Integer.parseInt(randomgraph.input);

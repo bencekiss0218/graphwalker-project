@@ -58,7 +58,6 @@ public class BreadthFirstSearch implements Algorithm {
         if (element instanceof RuntimeVertex) {
           RuntimeVertex vertex = (RuntimeVertex) element;
 
-
           for (RuntimeEdge edge : context.getModel().getOutEdges(vertex)) {
             connectedComponent.add(edge);
             transitions.add(edge);

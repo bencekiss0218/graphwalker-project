@@ -38,7 +38,6 @@ public class AllTransitionStateFull extends StopConditionBase{
       length = 2;
     }
 
-    //System.out.println(length);
 
     return (double) getContext().getProfiler().getTotalVisitCount() / length;
   }

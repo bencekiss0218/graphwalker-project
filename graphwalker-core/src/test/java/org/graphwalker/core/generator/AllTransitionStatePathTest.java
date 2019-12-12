@@ -66,7 +66,7 @@ public class AllTransitionStatePathTest {
       context.getProfiler().stop(context);
       Element first = expectedElements.removeFirst().build();
       Element second = context.getCurrentElement();
-      System.out.println("FIRST: " + first + "SECOND: " + second);
+      //System.out.println("FIRST: " + first + "SECOND: " + second);
       assertEquals(first, second);
     }
   }

@@ -34,7 +34,6 @@ public class AllTransitionStatePairs extends StopConditionBase{
       length = 2;
     }
 
-
     return (double) getContext().getProfiler().getTotalVisitCount() / length;
   }
 }
